@@ -4,7 +4,7 @@ services:
   tasks-ui:
     build:
       context: webserver/
-      dockerfile: webserver/Dockerfile
+      dockerfile: Dockerfile
     image: webserver-k:1
     ports:
     - 8081:8080
@@ -29,7 +29,7 @@ services:
     - 443:443
     - 8443:6443
     privileged: true
-    cpus: 1
+    cpus: 0.5
     ipc: private
     tty: true
     security_opt:
@@ -50,7 +50,7 @@ services:
       - /run
       - /tmp
     privileged: true
-    cpus: 1
+    cpus: 0.5
     ipc: private
     tty: true
     security_opt:
