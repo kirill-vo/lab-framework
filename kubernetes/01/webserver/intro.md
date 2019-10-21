@@ -1,9 +1,12 @@
-## Let's Start
+# In this section you will do following:
 
-Welcome to the Hands-on Quiz Experience.
+- Initialize Kubernetes Control Plain
+- Configure kubectl utility
+- Depploy POD Network
+- Join Worker Node
+- Decorate Worker Node with Custom Label
+- Deploy Kubernetes Dashboard
+- Deploy Metrics-server
 
 
-In this lab exercise you will test the knowledge you gained in the lecture. You may be required to refer to the kubectl help or the kubernetes documentation pages for additional command options.
-
-
-Well, go go go
+# Good Luck!

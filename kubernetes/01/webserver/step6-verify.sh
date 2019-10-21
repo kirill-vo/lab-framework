@@ -1,9 +1,9 @@
 #!/bin/bash
 
 [ -f /.ok ] && echo done ||
-kubectl get nodes >/dev/null 2>&1 &&
-kubeadm token list | grep abcdef.0123456789abcdef >/dev/null &&
-[ `kubeadm token list | grep abcdef.0123456789abcdef | awk '{print $2}' | sed 's/[^0-9]//g'` -le 20 ]  &&
+[ `kubectl get deployment -n kube-system kubernetes-dashboard -o jsonpath='{.spec.template.spec.containers[0].name}'` == "kubernetes-dashboard" ] &&
+[ `kubectl get svc -n kube-system kubernetes-dashboard -o jsonpath='{.spec.ports[0].targetPort}'` == "8443" ] &&
+[ `kubectl get ep -n kube-system kubernetes-dashboard -o jsonpath="{.subsets[*].addresses[0].nodeName}"` == 'node01' ]  &&
 echo done || exit 0
 
 TASK_SCORE="1"
@@ -15,7 +15,7 @@ cat << EOF | curl -s -X POST --data @- https://s9cfrymdt8.execute-api.eu-west-1.
   "payload": {
     "name": "${FIRSTNAME} ${LASTNAME}",
     "email": "${EMAIL}",
-    "scenario": "k8s-init.1", 
+    "scenario": "k8s-init.6", 
     "score": ${TASK_SCORE}
   }
 }

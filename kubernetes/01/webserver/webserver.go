@@ -4,37 +4,42 @@ import (
     "fmt"
     "log"
     "net/http"
-    "os"
-    "io"
-
+    // "os"
+    "io/ioutil"
+    // "path/filepath"
+    // "encoding/json"
 )
 
-func Copy(src, dst string) error {
-    in, err := os.Open(src)
-    if err != nil {
-        return err
-    }
-    defer in.Close()
+var current_step int = 0
 
-    out, err := os.Create(dst)
+func Copy(src, dst string) bool {
+    // read data from Asset
+    data, err := Asset(src)
     if err != nil {
-        return err
+        fmt.Printf("Asset was not found.")
+        return false
     }
-    defer out.Close()
 
-    _, err = io.Copy(out, in)
-    if err != nil {
-        return err
+    // write to file
+    err2 := ioutil.WriteFile(dst, data, 0644)
+    if err2 != nil {
+        fmt.Printf("File wasn't written.")
+        return false
     }
-    return out.Close()
+    return true
 }
+
 
 
 func check() {
     // sh verify.sh
     if (true) {
-        Copy("step01.md", "current.md")
-        Copy("step01-verify.sh", "verify.sh")
+        res := Copy(fmt.Sprintf("step%d.md", current_step), "current.md")
+        if (!res){
+            Copy("finish.md", "current.md")
+        }
+        // Copy("step1-verify.sh", "verify.sh")
+        current_step = current_step + 1 
     }
 }
 
@@ -86,6 +91,7 @@ func root(w http.ResponseWriter, r *http.Request) {
 func main() {
 
     Copy("intro.md", "current.md")
+
 
     http.HandleFunc("/", root)
     http.HandleFunc("/_data", data)

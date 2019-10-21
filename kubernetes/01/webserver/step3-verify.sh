@@ -1,9 +1,7 @@
 #!/bin/bash
 
 [ -f /.ok ] && echo done ||
-kubectl get nodes >/dev/null 2>&1 &&
-kubeadm token list | grep abcdef.0123456789abcdef >/dev/null &&
-[ `kubeadm token list | grep abcdef.0123456789abcdef | awk '{print $2}' | sed 's/[^0-9]//g'` -le 20 ]  &&
+kubectl get pods -n kube-system | grep weave | grep Running >/dev/null  &&
 echo done || exit 0
 
 TASK_SCORE="1"
@@ -15,7 +13,7 @@ cat << EOF | curl -s -X POST --data @- https://s9cfrymdt8.execute-api.eu-west-1.
   "payload": {
     "name": "${FIRSTNAME} ${LASTNAME}",
     "email": "${EMAIL}",
-    "scenario": "k8s-init.1", 
+    "scenario": "k8s-init.3", 
     "score": ${TASK_SCORE}
   }
 }
