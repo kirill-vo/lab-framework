@@ -8,5 +8,4 @@
 - Deploy Kubernetes Dashboard
 - Deploy Metrics-server
 
-
 # Good Luck!

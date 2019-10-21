@@ -1,3 +1,4 @@
+# Task 2
 
 Configure current user to operate with kubernetes API with `kubectl`
 

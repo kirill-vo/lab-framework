@@ -1,19 +1,11 @@
 version: "2.3"
 
 services:
-  tasks-ui:
+  master:
+    # image: sbeliakou/kind:master-1.16.2
     build:
       context: webserver/
       dockerfile: Dockerfile
-    image: webserver-k:1
-    ports:
-    - 8081:8080
-    networks:
-      k8slocal:
-        ipv4_address: 172.31.0.10
-
-  master:
-    image: sbeliakou/kind:master-1.16.2
     container_name: master
     hostname: master
     volumes:
@@ -25,11 +17,12 @@ services:
     - /tmp
     ports:
     - 9090:9090
+    - 8081:8081
     - 80:80
     - 443:443
     - 8443:6443
     privileged: true
-    cpus: 0.5
+    cpus: 1
     ipc: private
     tty: true
     security_opt:

@@ -1,0 +1,12 @@
+[Unit]
+Description=
+
+[Service]
+WorkingDirectory=/var/_data
+ExecStart=/var/_data/web
+KillMode=process
+Restart=on-failure
+Type=exec
+
+[Install]
+WantedBy=multi-user.target
