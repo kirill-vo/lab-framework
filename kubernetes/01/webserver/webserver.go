@@ -4,16 +4,59 @@ import (
     "fmt"
     "log"
     "net/http"
+    "os"
+    "io"
 
-    "io/ioutil"
-    "strings"
 )
 
-func check(){
-    return new page || current page
+func Copy(src, dst string) error {
+    in, err := os.Open(src)
+    if err != nil {
+        return err
+    }
+    defer in.Close()
+
+    out, err := os.Create(dst)
+    if err != nil {
+        return err
+    }
+    defer out.Close()
+
+    _, err = io.Copy(out, in)
+    if err != nil {
+        return err
+    }
+    return out.Close()
 }
 
-func hello(w http.ResponseWriter, r *http.Request) {
+
+func check() {
+    // sh verify.sh
+    if (true) {
+        Copy("step01.md", "current.md")
+        Copy("step01-verify.sh", "verify.sh")
+    }
+}
+
+func data(w http.ResponseWriter, r *http.Request){
+    if r.URL.Path != "/_data" {
+        http.Error(w, "404 not found.", http.StatusNotFound)
+        return
+    }
+
+    w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
+    w.Header().Set("Pragma", "no-cache")
+    w.Header().Set("Expires", "0")
+
+    switch r.Method {
+        case "GET":
+            fmt.Printf("Getting GET...\n")
+            http.ServeFile(w, r, "/var/_data/current.md")
+    }
+}
+
+
+func root(w http.ResponseWriter, r *http.Request) {
     if r.URL.Path != "/" {
         http.Error(w, "404 not found.", http.StatusNotFound)
         return
@@ -33,32 +76,19 @@ func hello(w http.ResponseWriter, r *http.Request) {
                 return
             }
             fmt.Printf("Getting POST...\n")
-            // http.ServeFile(w, r, check())
+
+            check()
+            http.Redirect(w, r, r.URL.Path, http.StatusSeeOther)
+
     }
 }
 
 func main() {
-    input, err := ioutil.ReadFile("/var/_data/intro.md")
-    if err != nil {
-            log.Fatalln(err)
-    }
 
-    lines := strings.Split(string(input), "\n")
+    Copy("intro.md", "current.md")
 
-    for i, line := range lines {
-            if strings.Contains(line, "]") {
-                    lines[i] = "LOL"
-            }
-    }
-    output := strings.Join(lines, "\n")
-    err = ioutil.WriteFile("/var/www/html/index.html", []byte(output), 0644)
-    if err != nil {
-            log.Fatalln(err)
-    }
-
-
-
-    http.HandleFunc("/", hello)
+    http.HandleFunc("/", root)
+    http.HandleFunc("/_data", data)
 
     fmt.Printf("Starting server for testing HTTP POST...\n")
     if err := http.ListenAndServe("0.0.0.0:8080", nil); err != nil {
