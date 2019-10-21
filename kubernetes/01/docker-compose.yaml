@@ -1,0 +1,70 @@
+version: "2.3"
+
+services:
+  tasks-ui:
+    build:
+      context: webserver/
+      dockerfile: webserver/Dockerfile
+    image: webserver-k:1
+    ports:
+    - 8081:8080
+    networks:
+      k8slocal:
+        ipv4_address: 172.31.0.10
+
+  master:
+    image: sbeliakou/kind:master-1.16.2
+    container_name: master
+    hostname: master
+    volumes:
+    - /lib/modules:/lib/modules:ro
+    - /sys/fs/cgroup:/sys/fs/cgroup
+    - /var/lib/containerd
+    tmpfs:
+    - /run
+    - /tmp
+    ports:
+    - 9090:9090
+    - 80:80
+    - 443:443
+    - 8443:6443
+    privileged: true
+    cpus: 1
+    ipc: private
+    tty: true
+    security_opt:
+      - seccomp:unconfined
+    restart: unless-stopped
+    networks:
+      k8slocal:
+        ipv4_address: 172.31.0.2
+
+  worker:
+    image: sbeliakou/kind:node-1.16.2
+    hostname: worker
+    volumes:
+      - /lib/modules:/lib/modules:ro
+      - /sys/fs/cgroup:/sys/fs/cgroup
+      - /var/lib/containerd
+    tmpfs:
+      - /run
+      - /tmp
+    privileged: true
+    cpus: 1
+    ipc: private
+    tty: true
+    security_opt:
+      - seccomp:unconfined
+    restart: unless-stopped
+    depends_on:
+      - master
+    networks:
+      k8slocal:
+
+networks:
+  k8slocal:
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.31.0.0/16
+        gateway: 172.31.0.1
