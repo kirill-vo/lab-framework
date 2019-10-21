@@ -1,18 +1,11 @@
-# It's Done!
 
-Some useful commands to know:
+Deploy Metrics Server from [here](https://raw.githubusercontent.com/kubernetes/kops/master/addons/metrics-server/v1.8.x.yaml)
 
-<pre class="file">
+## Check that:
+- Metrics Server is deployed successfully and is `Running`
+- Command `kubectl top nodes` shows performance statistics by nodes
+- Command `kubectl top pods --all-namespaces` shows performance statistics by pods
 
-kubectl get nodes
-kubectl cluster-info
-kubectl get componentstatus
-
-kubectl get pods
-kubectl get deployments
-kubectl get svc
-
-kubectl top nodes
-kubectl top pods 
-kubectl top pods --all-namespaces
-</pre>
+## Documentation:
+- https://kubernetes.io/docs/tasks/debug-application-cluster/resource-usage-monitoring/
+- https://github.com/kubernetes-incubator/metrics-server
