@@ -1,13 +1,13 @@
 FROM golang
 WORKDIR /go/src/webserver
-COPY webserver.go .
+COPY ./* ./
 RUN go get -u github.com/go-bindata/go-bindata/... && \
-    go-bindata -ignore=\\webserver.go ./... && \
-    GOOS=linux GOARCH=386 go build -a ./webserver.go
+    go-bindata ./... && \
+    GOOS=linux GOARCH=386 go build -a ./*.go && ls -l
+
 
 FROM scratch
 WORKDIR /var/_data/
-COPY --from=0 /go/src/webserver/* .
-COPY . /var/_data/
+COPY --from=0 /go/src/webserver/bindata .
 EXPOSE 8080
-CMD ["./webserver"]
+CMD ["./bindata"]

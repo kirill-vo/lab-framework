@@ -4,13 +4,38 @@ import (
     "fmt"
     "log"
     "net/http"
-    // "os"
-    "io/ioutil"
-    // "path/filepath"
-    // "encoding/json"
+
+    // "io" // copy with files
+    // "os" // copy with files
+    "io/ioutil" // copy with Asset
 )
 
 var current_step int = 0
+
+
+
+// func Copy(src, dst string) bool {
+//     in, err := os.Open(src)
+//     if err != nil {
+//         return false
+//     }
+//     defer in.Close()
+
+//     out, err := os.Create(dst)
+//     if err != nil {
+//         return false
+//     }
+//     defer out.Close()
+
+//     _, err = io.Copy(out, in)
+//     if err != nil {
+//         return false
+//     }
+//     out.Close()
+//     return true
+// }
+
+
 
 func Copy(src, dst string) bool {
     // read data from Asset
@@ -53,7 +78,7 @@ func check_back() {
 
 func data(w http.ResponseWriter, r *http.Request){
     if r.URL.Path != "/_data" {
-        http.Error(w, "404 not found.", http.StatusNotFound)
+        http.Error(w, "404 not found./data", http.StatusNotFound)
         return
     }
 
@@ -70,7 +95,7 @@ func data(w http.ResponseWriter, r *http.Request){
 
 func next(w http.ResponseWriter, r *http.Request){
     if r.URL.Path != "/_next" {
-        http.Error(w, "404 not found.", http.StatusNotFound)
+        http.Error(w, "404 not found./next", http.StatusNotFound)
         return
     }
 
@@ -92,7 +117,7 @@ func next(w http.ResponseWriter, r *http.Request){
 }
 func back(w http.ResponseWriter, r *http.Request){
     if r.URL.Path != "/_back" {
-        http.Error(w, "404 not found.", http.StatusNotFound)
+        http.Error(w, "404 not found./back", http.StatusNotFound)
         return
     }
 
@@ -116,7 +141,7 @@ func back(w http.ResponseWriter, r *http.Request){
 
 func root(w http.ResponseWriter, r *http.Request) {
     if r.URL.Path != "/" {
-        http.Error(w, "404 not found.", http.StatusNotFound)
+        http.Error(w, "404 not found./", http.StatusNotFound)
         return
     }
 
@@ -133,7 +158,7 @@ func root(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-
+    Copy("index.html", "index.html")
     Copy("intro.md", "current.md")
 
     http.HandleFunc("/", root)
