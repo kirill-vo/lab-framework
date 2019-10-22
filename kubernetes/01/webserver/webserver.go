@@ -6,7 +6,7 @@ import (
     "net/http"
     "io/ioutil" // copy with Asset
     "github.com/smallfish/simpleyaml"
-    // "os/exec"
+    "os/exec"
 )
 
 func Copy(src, dst string) bool {
@@ -26,11 +26,10 @@ func Copy(src, dst string) bool {
     return true
 }
 
-var current_step int = 0
+var current_step int = -1 // on intro.md; task 1 - [0]
 
 
-var res bool = Copy("course.yaml", "course.yaml")
-
+var _ bool = Copy("course.yaml", "course.yaml")
 var source, _ = ioutil.ReadFile("course.yaml")
 var yaml, _ = simpleyaml.NewYaml(source)
 var tasks_number, _ = yaml.Get("courses").GetArraySize()
@@ -38,24 +37,27 @@ var tasks_number, _ = yaml.Get("courses").GetArraySize()
 
 func check_next() {    
     // sh verify.sh
-    // verify_path, _ := yaml.Get("courses").GetIndex(current_step).Get("verify").String()
-    // Copy(verify_path, "/tmp/verify.sh")
-    // out, err := exec.Command("date").Output()
-    // if err != nil {
-    //     log.Fatal(err)
-    // }
-    // fmt.Printf("The date is %s\n", out)
+    verify_path, _ := yaml.Get("courses").GetIndex(0).Get("verify").String()
+    data, err := Asset(verify_path)
+    if err != nil {
+        fmt.Printf("Asset was not found.")
+    }
+    fmt.Printf("The path is: %s\n", string(data))
+    out, err := exec.Command(string(data)).Output()
+    if err != nil {
+        fmt.Printf("You didn't complete task")
+    }
+    fmt.Printf("The output is: %s\n", out)
 
 
     if (true) {
         current_step = current_step + 1
-
         if(current_step < tasks_number){
             task_path, _ := yaml.Get("courses").GetIndex(current_step).Get("task").String()
             Copy(task_path, "current.md")
         } else {
             Copy("finish.md", "current.md")
-            current_step = current_step - 1
+            current_step = tasks_number
         }  
     }
 }
@@ -67,7 +69,7 @@ func check_back() {
         Copy(task_path, "current.md")
     } else {
         Copy("intro.md", "current.md")
-        current_step = 0
+        current_step = -1
     }
 }
 
