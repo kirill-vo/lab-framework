@@ -38,16 +38,15 @@ var tasks_number, _ = yaml.Get("courses").GetArraySize()
 func check_next() {    
     // sh verify.sh
     verify_path, _ := yaml.Get("courses").GetIndex(0).Get("verify").String()
-    data, err := Asset(verify_path)
-    if err != nil {
-        fmt.Printf("Asset was not found.")
+    Copy(verify_path, "/tmp/verify.sh")
+    cmd := exec.Command("bash", "/tmp/verify.sh")
+    log.Printf("Running command and waiting for it to finish...")
+    err := cmd.Run()
+    if err == nil {
+        log.Printf("Command finished without error")
+    } else {
+        log.Printf("Command finished with error")
     }
-    fmt.Printf("The path is: %s\n", string(data))
-    out, err := exec.Command(string(data)).Output()
-    if err != nil {
-        fmt.Printf("You didn't complete task")
-    }
-    fmt.Printf("The output is: %s\n", out)
 
 
     if (true) {
