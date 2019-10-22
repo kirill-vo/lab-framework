@@ -153,12 +153,7 @@ func root(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-
     // yaml as global variable
-
-
-
-
     // courses_number, err := yaml.Get("courses").GetArraySize()
     // courseData_path, err := yaml.Get("courses").GetIndex(0).Get("courseData").String()
     task_path, _ := yaml.Get("courses").GetIndex(0).Get("task").String()
