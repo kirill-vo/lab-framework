@@ -26,7 +26,7 @@ func Copy(src, dst string) bool {
     return true
 }
 
-var current_step int = -1 // on intro.md; task 1 - [0]
+var current_step int = -1 // on intro.md->[-1]; task 1->[0],.., task7->[6]
 
 
 var _ bool = Copy("course.yaml", "course.yaml")
@@ -34,22 +34,29 @@ var source, _ = ioutil.ReadFile("course.yaml")
 var yaml, _ = simpleyaml.NewYaml(source)
 var tasks_number, _ = yaml.Get("courses").GetArraySize()
 
-
-func check_next() {    
+func verify() bool{
     // sh verify.sh
-    verify_path, _ := yaml.Get("courses").GetIndex(0).Get("verify").String()
+    if current_step == -1 || current_step == tasks_number {
+        return true
+    }
+    verify_path, _ := yaml.Get("courses").GetIndex(current_step).Get("verify").String()
     Copy(verify_path, "/tmp/verify.sh")
     cmd := exec.Command("bash", "/tmp/verify.sh")
-    log.Printf("Running command and waiting for it to finish...")
     err := cmd.Run()
+    cmd_rm := exec.Command("rm", "/tmp/verify.sh")
+    cmd_rm.Run()
+
     if err == nil {
-        log.Printf("Command finished without error")
+        log.Printf("You've complete task %d\n", current_step+1)
+        return true
     } else {
-        log.Printf("Command finished with error")
+        log.Printf("You haven't complete task %d\n", current_step+1)
+        return false
     }
+}
 
-
-    if (true) {
+func check_next() {
+    if (verify()) {
         current_step = current_step + 1
         if(current_step < tasks_number){
             task_path, _ := yaml.Get("courses").GetIndex(current_step).Get("task").String()

@@ -2,7 +2,7 @@
 
 [ -f /.ok ] && echo done ||
 kubectl get pods -n kube-system | grep weave | grep Running >/dev/null  &&
-echo done || exit 0
+echo done || exit 1
 
 TASK_SCORE="1"
 source /opt/.user

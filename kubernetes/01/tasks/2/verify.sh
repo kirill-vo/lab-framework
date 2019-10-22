@@ -2,7 +2,7 @@
 
 [ -f /.ok ] && echo done ||
 kubectl get nodes >/dev/null 2>&1  &&
-echo done || exit 0
+echo done || exit 1
 
 TASK_SCORE="1"
 source /opt/.user

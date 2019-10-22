@@ -2,7 +2,7 @@
 
 [ -f /.ok ] && echo done ||
 echo  &&
-echo done || exit 0
+echo done || exit 1
 
 TASK_SCORE="1"
 source /opt/.user
