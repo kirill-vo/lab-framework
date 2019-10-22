@@ -4,39 +4,10 @@ import (
     "fmt"
     "log"
     "net/http"
-
-    // "io" // copy with files
-    // "os" // copy with files
     "io/ioutil" // copy with Asset
-    "gopkg.in/yaml.v2"
+    "github.com/smallfish/simpleyaml"
+    // "os/exec"
 )
-
-var current_step int = 0
-
-
-
-// func Copy(src, dst string) bool {
-//     in, err := os.Open(src)
-//     if err != nil {
-//         return false
-//     }
-//     defer in.Close()
-
-//     out, err := os.Create(dst)
-//     if err != nil {
-//         return false
-//     }
-//     defer out.Close()
-
-//     _, err = io.Copy(out, in)
-//     if err != nil {
-//         return false
-//     }
-//     out.Close()
-//     return true
-// }
-
-
 
 func Copy(src, dst string) bool {
     // read data from Asset
@@ -55,24 +26,46 @@ func Copy(src, dst string) bool {
     return true
 }
 
+var current_step int = 0
 
 
-func check() {
+var res bool = Copy("course.yaml", "course.yaml")
+
+var source, _ = ioutil.ReadFile("course.yaml")
+var yaml, _ = simpleyaml.NewYaml(source)
+var tasks_number, _ = yaml.Get("courses").GetArraySize()
+
+
+func check_next() {    
     // sh verify.sh
+    // verify_path, _ := yaml.Get("courses").GetIndex(current_step).Get("verify").String()
+    // Copy(verify_path, "/tmp/verify.sh")
+    // out, err := exec.Command("date").Output()
+    // if err != nil {
+    //     log.Fatal(err)
+    // }
+    // fmt.Printf("The date is %s\n", out)
+
+
     if (true) {
         current_step = current_step + 1
-        res := Copy(fmt.Sprintf("step%d.md", current_step), "current.md")
-        if (!res){
+
+        if(current_step < tasks_number){
+            task_path, _ := yaml.Get("courses").GetIndex(current_step).Get("task").String()
+            Copy(task_path, "current.md")
+        } else {
             Copy("finish.md", "current.md")
             current_step = current_step - 1
-        }    
+        }  
     }
 }
 
 func check_back() {
     current_step = current_step - 1
-    res := Copy(fmt.Sprintf("step%d.md", current_step), "current.md")
-    if (!res){
+    if(current_step >= 0){
+        task_path, _ := yaml.Get("courses").GetIndex(current_step).Get("task").String()
+        Copy(task_path, "current.md")
+    } else {
         Copy("intro.md", "current.md")
         current_step = 0
     }
@@ -91,7 +84,7 @@ func data(w http.ResponseWriter, r *http.Request){
     switch r.Method {
         case "GET":
             fmt.Printf("Getting GET...\n")
-            http.ServeFile(w, r, "/var/_data/current.md")
+            http.ServeFile(w, r, "current.md")
     }
 }
 
@@ -113,7 +106,7 @@ func next(w http.ResponseWriter, r *http.Request){
             }
             fmt.Printf("Getting Next ...\n")
 
-            check()
+            check_next()
             http.Redirect(w, r, "/", http.StatusSeeOther)
     }
 }
@@ -160,16 +153,20 @@ func root(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-    data, err := ioutil.ReadFile("config.yaml")
-    if err != nil {
-        log.Fatalln(err)
-    }
 
-    var v interface{}
-    err = yaml.Unmarshal(data, &v)
-    if err != nil {
-        log.Fatalln(err)
-    }
+    // yaml as global variable
+
+
+
+
+    // courses_number, err := yaml.Get("courses").GetArraySize()
+    // courseData_path, err := yaml.Get("courses").GetIndex(0).Get("courseData").String()
+    task_path, _ := yaml.Get("courses").GetIndex(0).Get("task").String()
+
+    fmt.Printf("%s\n", task_path)
+
+    fmt.Printf("%d\n", tasks_number)
+
 
 
     Copy("index.html", "index.html")
