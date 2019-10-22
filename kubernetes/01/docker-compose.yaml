@@ -22,7 +22,7 @@ services:
     - 443:443
     - 8443:6443
     privileged: true
-    cpus: 1
+    cpus: 0.75
     ipc: private
     tty: true
     security_opt:
