@@ -8,6 +8,7 @@ import (
     // "io" // copy with files
     // "os" // copy with files
     "io/ioutil" // copy with Asset
+    "gopkg.in/yaml.v2"
 )
 
 var current_step int = 0
@@ -67,6 +68,7 @@ func check() {
         }    
     }
 }
+
 func check_back() {
     current_step = current_step - 1
     res := Copy(fmt.Sprintf("step%d.md", current_step), "current.md")
@@ -158,6 +160,18 @@ func root(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+    data, err := ioutil.ReadFile("config.yaml")
+    if err != nil {
+        log.Fatalln(err)
+    }
+
+    var v interface{}
+    err = yaml.Unmarshal(data, &v)
+    if err != nil {
+        log.Fatalln(err)
+    }
+
+
     Copy("index.html", "index.html")
     Copy("intro.md", "current.md")
 

@@ -4,7 +4,7 @@ services:
   master:
     # image: sbeliakou/kind:master-1.16.2
     build:
-      context: webserver/
+      context: ./
       dockerfile: Dockerfile
     container_name: master
     hostname: master
