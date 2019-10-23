@@ -26,13 +26,14 @@ func Copy(src, dst string) bool {
     return true
 }
 
-var current_step int = -1 // on intro.md->[-1]; task 1->[0],.., task7->[6]
+var current_step int = -1 // on intro.md; task 1 - [0]
 
 
 var _ bool = Copy("course.yaml", "course.yaml")
 var source, _ = ioutil.ReadFile("course.yaml")
 var yaml, _ = simpleyaml.NewYaml(source)
 var tasks_number, _ = yaml.Get("courses").GetArraySize()
+
 
 func verify() bool{
     // sh verify.sh
@@ -55,31 +56,7 @@ func verify() bool{
     }
 }
 
-func check_next() {
-    if (verify()) {
-        current_step = current_step + 1
-        if(current_step < tasks_number){
-            task_path, _ := yaml.Get("courses").GetIndex(current_step).Get("task").String()
-            Copy(task_path, "current.md")
-        } else {
-            Copy("finish.md", "current.md")
-            current_step = tasks_number
-        }  
-    }
-}
-
-func check_back() {
-    current_step = current_step - 1
-    if(current_step >= 0){
-        task_path, _ := yaml.Get("courses").GetIndex(current_step).Get("task").String()
-        Copy(task_path, "current.md")
-    } else {
-        Copy("intro.md", "current.md")
-        current_step = -1
-    }
-}
-
-func data(w http.ResponseWriter, r *http.Request){
+func WebHandlerData(w http.ResponseWriter, r *http.Request){
     if r.URL.Path != "/_data" {
         http.Error(w, "404 not found./data", http.StatusNotFound)
         return
@@ -96,7 +73,20 @@ func data(w http.ResponseWriter, r *http.Request){
     }
 }
 
-func next(w http.ResponseWriter, r *http.Request){
+func go_next() {    
+    if (true) {
+        current_step = current_step + 1
+        if(current_step < tasks_number){
+            task_path, _ := yaml.Get("courses").GetIndex(current_step).Get("task").String()
+            Copy(task_path, "current.md")
+        } else {
+            Copy("finish.md", "current.md")
+            current_step = tasks_number
+        }  
+    }
+}
+
+func WebHandlerNext(w http.ResponseWriter, r *http.Request){
     if r.URL.Path != "/_next" {
         http.Error(w, "404 not found./next", http.StatusNotFound)
         return
@@ -113,12 +103,23 @@ func next(w http.ResponseWriter, r *http.Request){
                 return
             }
             fmt.Printf("Getting Next ...\n")
-
-            check_next()
+            go_next()
             http.Redirect(w, r, "/", http.StatusSeeOther)
     }
 }
-func back(w http.ResponseWriter, r *http.Request){
+
+func go_back() {
+    current_step = current_step - 1
+    if(current_step >= 0){
+        task_path, _ := yaml.Get("courses").GetIndex(current_step).Get("task").String()
+        Copy(task_path, "current.md")
+    } else {
+        Copy("intro.md", "current.md")
+        current_step = -1
+    }
+}
+
+func WebHandlerBack(w http.ResponseWriter, r *http.Request){
     if r.URL.Path != "/_back" {
         http.Error(w, "404 not found./back", http.StatusNotFound)
         return
@@ -135,14 +136,34 @@ func back(w http.ResponseWriter, r *http.Request){
                 return
             }
             fmt.Printf("Getting Back...\n")
-
-            check_back()
+            go_back()
             http.Redirect(w, r, "/", http.StatusSeeOther)
     }
 }
 
 
-func root(w http.ResponseWriter, r *http.Request) {
+func WebHandlerCheck(w http.ResponseWriter, r *http.Request) {
+    if r.URL.Path != "/_check" {
+        http.Error(w, "404 not found /_check", http.StatusNotFound)
+        return
+    }
+
+    w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
+    w.Header().Set("Pragma", "no-cache")
+    w.Header().Set("Expires", "0")
+
+    switch r.Method {
+        case "POST":
+            fmt.Printf("Getting POST (check) ...\n")
+            if verify() {
+                fmt.Printf("all good\n")
+            } else {
+                http.Error(w, "501", 501)
+            }
+    }
+}
+
+func WebHandlerRoot(w http.ResponseWriter, r *http.Request) {
     if r.URL.Path != "/" {
         http.Error(w, "404 not found./", http.StatusNotFound)
         return
@@ -165,20 +186,17 @@ func main() {
     // courses_number, err := yaml.Get("courses").GetArraySize()
     // courseData_path, err := yaml.Get("courses").GetIndex(0).Get("courseData").String()
     task_path, _ := yaml.Get("courses").GetIndex(0).Get("task").String()
-
     fmt.Printf("%s\n", task_path)
-
     fmt.Printf("%d\n", tasks_number)
-
-
 
     Copy("index.html", "index.html")
     Copy("intro.md", "current.md")
 
-    http.HandleFunc("/", root)
-    http.HandleFunc("/_data", data)
-    http.HandleFunc("/_next", next)
-    http.HandleFunc("/_back", back)
+    http.HandleFunc("/", WebHandlerRoot)
+    http.HandleFunc("/_data", WebHandlerData)
+    http.HandleFunc("/_next", WebHandlerNext)
+    http.HandleFunc("/_back", WebHandlerBack)
+    http.HandleFunc("/_check", WebHandlerCheck)
 
     fmt.Printf("Starting server for testing HTTP POST...\n")
     if err := http.ListenAndServe("0.0.0.0:8081", nil); err != nil {

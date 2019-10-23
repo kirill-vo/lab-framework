@@ -1,3 +1,3 @@
-[[ "a" == "a" ]]
+#!/bin/bash
 
-
+/usr/bin/true
