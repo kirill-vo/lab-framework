@@ -9,6 +9,7 @@ import (
     "os"
     "bytes"
     "io" // for parsing env
+    "encoding/json"
 )
 
 func Copy(src, dst string) bool {    
@@ -53,30 +54,45 @@ var current_step int = 0
 var count_steps int = 9
 
 func sendToELK() bool {
-    log.Printf("You've complete task %s\n", os.Getenv("ANALYTICS"))
-    log.Printf("You've complete task %s\n", os.Getenv("TRAINING"))
-    log.Printf("You've complete task %s\n", os.Getenv("STUDENT"))
-    log.Printf("You've complete task %s\n", os.Getenv("LAB"))
+    log.Printf("env: %s\n", os.Getenv("ANALYTICS"))
+    log.Printf("env: %s\n", os.Getenv("TRAINING"))
+    log.Printf("env: %s\n", os.Getenv("STUDENT"))
+    log.Printf("env: %s\n", os.Getenv("LAB"))
 
     url := fmt.Sprintf("http://%s:9880/%s", os.Getenv("ANALYTICS"), os.Getenv("TRAINING"))
-    var body = []byte(fmt.Sprintf("{\"student\":\"%s\", \"lab\": \"%s\", \"task\": %d, \"status\": %v}", os.Getenv("STUDENT"), os.Getenv("LAB"), current_step, true))
 
-    log.Printf("sending %v\n",  fmt.Sprintf("{\"student\":\"%s\", \"lab\": \"%s\", \"task\": %d, \"status\": %v}", os.Getenv("STUDENT"), os.Getenv("LAB"), current_step, true))
-
-    req, err := http.NewRequest("POST", url, bytes.NewReader(body))
-    if err != nil {
-        log.Printf("Result hasn't sent to ELK on step %d\n", current_step)
+    type Student struct {
+        Student    string `json:"student"`
+        Lab        string `json:"lab"`
+        Task       int `json:"task"`
+        Status     bool `json:"status"` 
     }
 
-    req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+    // .....
 
-    resp, err := http.DefaultClient.Do(req)
-    if err != nil {
-        log.Printf("Result hasn't sent to ELK on step %d\n", current_step)
+    body := &Student{
+        Student: os.Getenv("STUDENT"), 
+        Lab: os.Getenv("LAB"),
+        Task: current_step,
+        Status: true,
     }
-    defer resp.Body.Close()
 
+    buf := new(bytes.Buffer)
+    json.NewEncoder(buf).Encode(body)
+    req, _ := http.NewRequest("POST", url, buf)
+    req.Header.Set("Content-Type", "application/json")
 
+    client := &http.Client{}
+    res, e := client.Do(req)
+    if e != nil {
+        log.Printf("Failure %v\n", e)
+    }
+
+    defer res.Body.Close()
+
+    fmt.Println("response Status:", res.Status)
+    // Print the body to the stdout
+    io.Copy(os.Stdout, res.Body)
     return true
 }
 
@@ -94,7 +110,7 @@ func verify() bool{
     cmd := exec.Command("bash", "/tmp/verify.sh")
     err := cmd.Run()
 
-    exec.Command("rm", "/tmp/verify.sh").Run()
+    exec.Command("rm", "-f", "/tmp/verify.sh").Run()
 
     if err == nil {
         log.Printf("You've complete task %d\n", current_step)
@@ -125,6 +141,20 @@ func go_step(step int){
     isIndexCopied := Copy(fmt.Sprintf("tasks/%d/index.html", current_step), "index.html")
     if !isIndexCopied {
         Copy("tasks/index.html", "index.html")
+    }
+
+    isVerifyCopied := Copy(fmt.Sprintf("tasks/%d/courseData.sh", current_step), "/tmp/courseData.sh")
+    if isVerifyCopied {
+        cmd := exec.Command("/bin/bash", "/tmp/courseData.sh")
+        err := cmd.Run()
+
+        output, _ := cmd.Output()
+        log.Printf("%v\n", output)
+        if err != nil {
+            log.Printf("%v\n", err)
+
+        }
+        // exec.Command("rm", "-f", "/tmp/courseData.sh").Run()
     }
 }
 

@@ -1,9 +1,3 @@
-#!/bin/bash
+#!/bin/bash -x
 
-##### preparing for KUBERNETES ####
-
-
-##### preparing for DOCKER ####
-
-
-
+kubectl create ns dev
