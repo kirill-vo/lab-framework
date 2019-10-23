@@ -26,7 +26,7 @@ func Copy(src, dst string) bool {
     return true
 }
 
-var current_step int = -1 // on intro.md; task 1 - [0]
+var current_step int = 0 // on intro.md; task 1 - [0]
 
 
 var _ bool = Copy("course.yaml", "course.yaml")
@@ -37,7 +37,7 @@ var tasks_number, _ = yaml.Get("courses").GetArraySize()
 
 func verify() bool{
     // sh verify.sh
-    if current_step == -1 || current_step == tasks_number {
+    if current_step == 0 || current_step == tasks_number - 1 {
         return true
     }
     verify_path, _ := yaml.Get("courses").GetIndex(current_step).Get("verify").String()
@@ -48,10 +48,10 @@ func verify() bool{
     cmd_rm.Run()
 
     if err == nil {
-        log.Printf("You've complete task %d\n", current_step+1)
+        log.Printf("You've complete task %d\n", current_step)
         return true
     } else {
-        log.Printf("You haven't complete task %d\n", current_step+1)
+        log.Printf("You haven't complete task %d\n", current_step)
         return false
     }
 }
@@ -73,17 +73,16 @@ func WebHandlerData(w http.ResponseWriter, r *http.Request){
     }
 }
 
-func go_next() {    
-    if (true) {
-        current_step = current_step + 1
-        if(current_step < tasks_number){
-            task_path, _ := yaml.Get("courses").GetIndex(current_step).Get("task").String()
-            Copy(task_path, "current.md")
-        } else {
-            Copy("finish.md", "current.md")
-            current_step = tasks_number
-        }  
+func go_step(step int){
+    if step < 0 {
+        current_step = 0
+    } else if step >= tasks_number {
+        current_step = tasks_number - 1
+    } else {
+        current_step = step
     }
+    task_path, _ := yaml.Get("courses").GetIndex(current_step).Get("task").String()
+    Copy(task_path, "current.md")
 }
 
 func WebHandlerNext(w http.ResponseWriter, r *http.Request){
@@ -103,19 +102,8 @@ func WebHandlerNext(w http.ResponseWriter, r *http.Request){
                 return
             }
             fmt.Printf("Getting Next ...\n")
-            go_next()
+            go_step(current_step + 1)
             http.Redirect(w, r, "/", http.StatusSeeOther)
-    }
-}
-
-func go_back() {
-    current_step = current_step - 1
-    if(current_step >= 0){
-        task_path, _ := yaml.Get("courses").GetIndex(current_step).Get("task").String()
-        Copy(task_path, "current.md")
-    } else {
-        Copy("intro.md", "current.md")
-        current_step = -1
     }
 }
 
@@ -136,7 +124,7 @@ func WebHandlerBack(w http.ResponseWriter, r *http.Request){
                 return
             }
             fmt.Printf("Getting Back...\n")
-            go_back()
+            go_step(current_step - 1)
             http.Redirect(w, r, "/", http.StatusSeeOther)
     }
 }
@@ -190,7 +178,7 @@ func main() {
     fmt.Printf("%d\n", tasks_number)
 
     Copy("index.html", "index.html")
-    Copy("intro.md", "current.md")
+    go_step(0)
 
     http.HandleFunc("/", WebHandlerRoot)
     http.HandleFunc("/_data", WebHandlerData)
