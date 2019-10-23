@@ -5,9 +5,9 @@ import (
     "log"
     "net/http"
     "io/ioutil" // copy with Asset
-    "github.com/smallfish/simpleyaml"
     "os/exec"
     "os"
+    "bytes"
     "io" // for parsing env
 )
 
@@ -16,14 +16,14 @@ func Copy(src, dst string) bool {
         // read data from Asset
         data, err := Asset(src)
         if err != nil {
-            fmt.Printf("Asset was not found.")
+            fmt.Printf("Asset was not found.\n")
             return false
         }
 
         // write to file
         err2 := ioutil.WriteFile(dst, data, 0644)
         if err2 != nil {
-            fmt.Printf("File wasn't written.")
+            fmt.Printf("File wasn't written.\n")
             return false
         }
         return true
@@ -49,28 +49,40 @@ func Copy(src, dst string) bool {
     }
 }
 
-var current_step int = 0 // on intro.md; task 1 - [0]
-var _ bool = Copy("course.yaml", "course.yaml")
-var source, _ = ioutil.ReadFile("course.yaml")
-var yaml, _ = simpleyaml.NewYaml(source)
-var count_steps, _ = yaml.Get("courses").GetArraySize()
+var current_step int = 0
+var count_steps int = 9
 
 func sendToELK() bool {
-    log.Printf("Your success result was sent to ELK: you've complete %d task.\n", current_step)
+    url := fmt.Sprintf("%s:9880/%s", os.Getenv("ANALYTICS"), os.Getenv("TRAINING"))
+
+    var jsonStr = []byte(`{"student":"Aliaksandr Dalimayeu", "lab": "kubernetes-1", "scnario": 1, "done": true}`)
+    req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
+    req.Header.Set("Content-Type", "application/json")
+
+    client := &http.Client{}
+    resp, err := client.Do(req)
+    if err != nil {
+        log.Printf("Result hasn't sent to ELK on step %d\n", current_step)
+    }
+    defer resp.Body.Close()
     return true
 }
 
 func verify() bool{
-    // sh verify.sh
     if current_step == 0 || current_step == count_steps - 1 {
         return true
     }
-    verify_path, _ := yaml.Get("courses").GetIndex(current_step).Get("verify").String()
-    Copy(verify_path, "/tmp/verify.sh")
+
+    // try copy verify (if it doesn't exist - return true)
+    isVerifyCopied := Copy(fmt.Sprintf("tasks/%d/verify.sh", current_step), "/tmp/verify.sh")
+    if !isVerifyCopied {
+        return true
+    }
+
     cmd := exec.Command("bash", "/tmp/verify.sh")
     err := cmd.Run()
-    cmd_rm := exec.Command("rm", "/tmp/verify.sh")
-    cmd_rm.Run()
+
+    exec.Command("rm", "/tmp/verify.sh").Run()
 
     if err == nil {
         log.Printf("You've complete task %d\n", current_step)
@@ -90,8 +102,14 @@ func go_step(step int){
     } else {
         current_step = step
     }
-    task_path, _ := yaml.Get("courses").GetIndex(current_step).Get("task").String()
-    Copy(task_path, "current.md")
+
+    // copy task.md (if it doesn't exist - remove current.md (with old data))
+    isTaskCopied := Copy(fmt.Sprintf("tasks/%d/task.md", current_step), "current.md")
+    if !isTaskCopied {
+        exec.Command("rm", "current.md").Run()
+    }
+
+    // tasks/##/index.html (if it doesn't exist - copy default tasks/index.html)
     isIndexCopied := Copy(fmt.Sprintf("tasks/%d/index.html", current_step), "index.html")
     if !isIndexCopied {
         Copy("tasks/index.html", "index.html")
@@ -200,8 +218,6 @@ func WebHandlerRoot(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-
-    Copy("tasks/index.html", "index.html")
     go_step(0)
 
     http.HandleFunc("/", WebHandlerRoot)

@@ -21,6 +21,11 @@ services:
     - 80:80
     - 443:443
     - 8443:6443
+    environment:
+      STUDENT: "Aliaksandr Dalimayeu"
+      TRAINING: "kubernetes"
+      LAB: "kubernetes-1"
+      ANALYTICS: "http://ecsc00a05b03.epam.com"
     privileged: true
     cpus: 0.75
     ipc: private
