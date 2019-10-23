@@ -7,28 +7,49 @@ import (
     "io/ioutil" // copy with Asset
     "github.com/smallfish/simpleyaml"
     "os/exec"
+    "os"
+    "io" // for parsing env
 )
 
-func Copy(src, dst string) bool {
-    // read data from Asset
-    data, err := Asset(src)
-    if err != nil {
-        fmt.Printf("Asset was not found.")
-        return false
-    }
+func Copy(src, dst string) bool {    
+    if os.Getenv("DEV") == "" {
+        // read data from Asset
+        data, err := Asset(src)
+        if err != nil {
+            fmt.Printf("Asset was not found.")
+            return false
+        }
 
-    // write to file
-    err2 := ioutil.WriteFile(dst, data, 0644)
-    if err2 != nil {
-        fmt.Printf("File wasn't written.")
-        return false
+        // write to file
+        err2 := ioutil.WriteFile(dst, data, 0644)
+        if err2 != nil {
+            fmt.Printf("File wasn't written.")
+            return false
+        }
+        return true
+    } else {
+        in, err := os.Open(src)
+        if err != nil {
+            return false
+        }
+        defer in.Close()
+
+        out, err := os.Create(dst)
+        if err != nil {
+            return false
+        }
+        defer out.Close()
+
+        _, err = io.Copy(out, in)
+        if err != nil {
+            return false
+        }
+        out.Close()
+        return true
     }
-    return true
 }
 
 var current_step int = 0 // on intro.md; task 1 - [0]
-
-
 var _ bool = Copy("course.yaml", "course.yaml")
 var source, _ = ioutil.ReadFile("course.yaml")
 var yaml, _ = simpleyaml.NewYaml(source)
@@ -56,6 +77,23 @@ func verify() bool{
     }
 }
 
+
+func go_step(step int){
+    if step < 0 {
+        current_step = 0
+    } else if step >= tasks_number {
+        current_step = tasks_number - 1
+    } else {
+        current_step = step
+    }
+    task_path, _ := yaml.Get("courses").GetIndex(current_step).Get("task").String()
+    Copy(task_path, "current.md")
+    isIndexCopied := Copy(fmt.Sprintf("tasks/%d/index.html", current_step), "index.html")
+    if !isIndexCopied {
+        Copy("tasks/index.html", "index.html")
+    }
+}
+
 func WebHandlerData(w http.ResponseWriter, r *http.Request){
     if r.URL.Path != "/_data" {
         http.Error(w, "404 not found./data", http.StatusNotFound)
@@ -71,18 +109,6 @@ func WebHandlerData(w http.ResponseWriter, r *http.Request){
             fmt.Printf("Getting GET...\n")
             http.ServeFile(w, r, "current.md")
     }
-}
-
-func go_step(step int){
-    if step < 0 {
-        current_step = 0
-    } else if step >= tasks_number {
-        current_step = tasks_number - 1
-    } else {
-        current_step = step
-    }
-    task_path, _ := yaml.Get("courses").GetIndex(current_step).Get("task").String()
-    Copy(task_path, "current.md")
 }
 
 func WebHandlerNext(w http.ResponseWriter, r *http.Request){
@@ -129,7 +155,6 @@ func WebHandlerBack(w http.ResponseWriter, r *http.Request){
     }
 }
 
-
 func WebHandlerCheck(w http.ResponseWriter, r *http.Request) {
     if r.URL.Path != "/_check" {
         http.Error(w, "404 not found /_check", http.StatusNotFound)
@@ -170,14 +195,8 @@ func WebHandlerRoot(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-    // yaml as global variable
-    // courses_number, err := yaml.Get("courses").GetArraySize()
-    // courseData_path, err := yaml.Get("courses").GetIndex(0).Get("courseData").String()
-    task_path, _ := yaml.Get("courses").GetIndex(0).Get("task").String()
-    fmt.Printf("%s\n", task_path)
-    fmt.Printf("%d\n", tasks_number)
 
-    Copy("index.html", "index.html")
+    Copy("tasks/index.html", "index.html")
     go_step(0)
 
     http.HandleFunc("/", WebHandlerRoot)
