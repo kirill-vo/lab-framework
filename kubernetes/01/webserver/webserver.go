@@ -53,19 +53,30 @@ var current_step int = 0
 var count_steps int = 9
 
 func sendToELK() bool {
-    url := fmt.Sprintf("%s:9880/%s", os.Getenv("ANALYTICS"), os.Getenv("TRAINING"))
-    var jsonStr = []byte(fmt.Sprintf(`{"student":"%s", "lab": "%s", "scnario": %d, "done": %v}`, os.Getenv("STUDENT"), os.Getenv("LAB"), current_step, true))
+    log.Printf("You've complete task %s\n", os.Getenv("ANALYTICS"))
+    log.Printf("You've complete task %s\n", os.Getenv("TRAINING"))
+    log.Printf("You've complete task %s\n", os.Getenv("STUDENT"))
+    log.Printf("You've complete task %s\n", os.Getenv("LAB"))
 
-    // var jsonStr = []byte(`{"student":"Aliaksandr Dalimayeu", "lab": "kubernetes-1", "scnario": 1, "done": true}`)
-    req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
-    req.Header.Set("Content-Type", "application/json")
+    url := fmt.Sprintf("http://%s:9880/%s", os.Getenv("ANALYTICS"), os.Getenv("TRAINING"))
+    var body = []byte(fmt.Sprintf("{\"student\":\"%s\", \"lab\": \"%s\", \"task\": %d, \"status\": %v}", os.Getenv("STUDENT"), os.Getenv("LAB"), current_step, true))
 
-    client := &http.Client{}
-    resp, err := client.Do(req)
+    log.Printf("sending %v\n",  fmt.Sprintf("{\"student\":\"%s\", \"lab\": \"%s\", \"task\": %d, \"status\": %v}", os.Getenv("STUDENT"), os.Getenv("LAB"), current_step, true))
+
+    req, err := http.NewRequest("POST", url, bytes.NewReader(body))
+    if err != nil {
+        log.Printf("Result hasn't sent to ELK on step %d\n", current_step)
+    }
+
+    req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+    resp, err := http.DefaultClient.Do(req)
     if err != nil {
         log.Printf("Result hasn't sent to ELK on step %d\n", current_step)
     }
     defer resp.Body.Close()
+
+
     return true
 }
 

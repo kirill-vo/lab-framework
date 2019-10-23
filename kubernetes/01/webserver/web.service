@@ -2,8 +2,9 @@
 Description=
 
 [Service]
-WorkingDirectory=/var/_data
+PassEnvironment=STUDENT LAB TRAINING ANALYTICS
 ExecStart=/var/_data/web
+WorkingDirectory=/var/_data
 KillMode=process
 Restart=on-failure
 Type=exec
