@@ -53,12 +53,16 @@ var current_step int = 0 // on intro.md; task 1 - [0]
 var _ bool = Copy("course.yaml", "course.yaml")
 var source, _ = ioutil.ReadFile("course.yaml")
 var yaml, _ = simpleyaml.NewYaml(source)
-var tasks_number, _ = yaml.Get("courses").GetArraySize()
+var count_steps, _ = yaml.Get("courses").GetArraySize()
 
+func sendToELK() bool {
+    log.Printf("Your success result was sent to ELK: you've complete %d task.\n", current_step)
+    return true
+}
 
 func verify() bool{
     // sh verify.sh
-    if current_step == 0 || current_step == tasks_number - 1 {
+    if current_step == 0 || current_step == count_steps - 1 {
         return true
     }
     verify_path, _ := yaml.Get("courses").GetIndex(current_step).Get("verify").String()
@@ -81,8 +85,8 @@ func verify() bool{
 func go_step(step int){
     if step < 0 {
         current_step = 0
-    } else if step >= tasks_number {
-        current_step = tasks_number - 1
+    } else if step >= count_steps {
+        current_step = count_steps - 1
     } else {
         current_step = step
     }
@@ -170,6 +174,7 @@ func WebHandlerCheck(w http.ResponseWriter, r *http.Request) {
             fmt.Printf("Getting POST (check) ...\n")
             if verify() {
                 fmt.Printf("all good\n")
+                sendToELK()
             } else {
                 http.Error(w, "501", 501)
             }
