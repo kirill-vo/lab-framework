@@ -54,8 +54,9 @@ var count_steps int = 9
 
 func sendToELK() bool {
     url := fmt.Sprintf("%s:9880/%s", os.Getenv("ANALYTICS"), os.Getenv("TRAINING"))
+    var jsonStr = []byte(fmt.Sprintf(`{"student":"%s", "lab": "%s", "scnario": %d, "done": %v}`, os.Getenv("STUDENT"), os.Getenv("LAB"), current_step, true))
 
-    var jsonStr = []byte(`{"student":"Aliaksandr Dalimayeu", "lab": "kubernetes-1", "scnario": 1, "done": true}`)
+    // var jsonStr = []byte(`{"student":"Aliaksandr Dalimayeu", "lab": "kubernetes-1", "scnario": 1, "done": true}`)
     req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
     req.Header.Set("Content-Type", "application/json")
 
@@ -151,7 +152,7 @@ func WebHandlerNext(w http.ResponseWriter, r *http.Request){
             }
             fmt.Printf("Getting Next ...\n")
             go_step(current_step + 1)
-            http.Redirect(w, r, "/", http.StatusSeeOther)
+            http.Redirect(w, r, "/content", http.StatusSeeOther)
     }
 }
 
@@ -173,7 +174,7 @@ func WebHandlerBack(w http.ResponseWriter, r *http.Request){
             }
             fmt.Printf("Getting Back...\n")
             go_step(current_step - 1)
-            http.Redirect(w, r, "/", http.StatusSeeOther)
+            http.Redirect(w, r, "/content", http.StatusSeeOther)
     }
 }
 
@@ -199,8 +200,8 @@ func WebHandlerCheck(w http.ResponseWriter, r *http.Request) {
     }
 }
 
-func WebHandlerRoot(w http.ResponseWriter, r *http.Request) {
-    if r.URL.Path != "/" {
+func WebHandlerContent(w http.ResponseWriter, r *http.Request) {
+    if r.URL.Path != "/content" {
         http.Error(w, "404 not found./", http.StatusNotFound)
         return
     }
@@ -217,10 +218,29 @@ func WebHandlerRoot(w http.ResponseWriter, r *http.Request) {
     }
 }
 
+func WebHandlerRoot(w http.ResponseWriter, r *http.Request) {
+    if r.URL.Path != "/" {
+        http.Error(w, "404 not found./", http.StatusNotFound)
+        return
+    }
+
+    w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
+    w.Header().Set("Pragma", "no-cache")
+    w.Header().Set("Expires", "0")
+
+    switch r.Method {
+        case "GET":
+            fmt.Printf("Getting GET...\n")
+            http.ServeFile(w, r, "main.html")
+
+    }
+}
+
 func main() {
     go_step(0)
 
     http.HandleFunc("/", WebHandlerRoot)
+    http.HandleFunc("/content", WebHandlerContent)
     http.HandleFunc("/_data", WebHandlerData)
     http.HandleFunc("/_next", WebHandlerNext)
     http.HandleFunc("/_back", WebHandlerBack)

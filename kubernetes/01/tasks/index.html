@@ -42,19 +42,15 @@
 
     <script type="text/javascript">
       function checkMeBtnClick() {
-            console.log('Button is clicked!');
-            $.post('/_check', function(data, status) {
-                console.log('Status is ' + status);
-                console.log(data);
-                if (status == 'success') {
-                    $('#check-content').html(data);
-                    $('button[name="checkMeBtn"]').css('display', 'none');
-                    $('button[name="successBtn"]').css('display', 'inline-block');
-                } else {
-                    $('#check-content').html('<p>Something goes wrong!</p>');
-                    $('#alert').css('display', 'inline-block');
-                }
-            });
+          $.post('/_check')
+          .done(function(data) {
+              $('#check-content').html(data);
+              $('button[name="checkMeBtn"]').css('display', 'none');
+              $('button[name="successBtn"]').css('display', 'inline-block');
+          })
+          .fail(function() {
+              $('#alert').css('display', 'inline-block');
+          });
         }
     </script>
 
@@ -62,11 +58,6 @@
   <body>
     <div id='check-content' style='display: none;'></div>
     <zero-md id="mark" src="/_data"></zero-md><br><br>
-
-    <div style='display: none;' id='alert' class="alert alert-dismissible alert-danger">
-      <button type="button" class="close" data-dismiss="alert">&times;</button>
-      <strong>Oh snap!</strong> <a href="#" class="alert-link">Change a few things up</a> and try submitting again.
-    </div>
 
     <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
       <div class="btn-group mr-1" role="group" aria-label="First group">
@@ -86,23 +77,12 @@
       </div>
     </div>
 
+    <br>
 
-    <!-- <br>
-    <div>
-        <button name='checkMeBtn' onclick="checkMeBtnClick();">Check me</button>
-        <button name='nextBtn' style='display: none;' onclick="window.location.href = 'next.html'">Next</button>
-    </div> -->
-    <!-- <div id='check-content' /> -->
-
-    <!-- <form action="/_back" method="post">
-      <button type="submit" class="btn btn-primary" style="text-align: center;"> << BACK </button>
-    </form>
-    
-    <form action="/_next" method="post">
-      <button type="submit" class="btn btn-primary" style="text-align: center;"> NEXT >> </button>
-    </form>
- -->
-
+    <div style='display: none;' id='alert' class="alert alert-dismissible alert-secondary">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <strong>Oh snap!</strong> <a href="#" class="alert-link">Change a few things up</a> and try submitting again.
+    </div>
     
   </body>
 </html>

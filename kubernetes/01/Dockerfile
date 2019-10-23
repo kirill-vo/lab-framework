@@ -12,6 +12,7 @@ FROM sbeliakou/kind:master-1.16.2
 WORKDIR /var/_data/
 
 COPY --from=build /go/src/webserver/web ./
+COPY --from=build /go/src/webserver/main.html ./
 
 COPY webserver/web.service /etc/systemd/system/
 RUN systemctl enable web

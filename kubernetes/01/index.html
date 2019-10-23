@@ -42,19 +42,26 @@
 
     <script type="text/javascript">
       function checkMeBtnClick() {
-            console.log('Button is clicked!');
-            $.post('/_check', function(data, status) {
-                console.log('Status is ' + status);
-                console.log(data);
-                if (status == 'success') {
-                    $('#check-content').html(data);
-                    $('button[name="checkMeBtn"]').css('display', 'none');
-                    $('button[name="successBtn"]').css('display', 'inline-block');
-                } else {
-                    $('#check-content').html('<p>Something goes wrong!</p>');
-                    $('#alert').css('display', 'inline-block');
-                }
-            });
+        $.post('/_check')
+          .done(function(data) {
+              $('#check-content').html(data);
+              $('button[name="checkMeBtn"]').css('display', 'none');
+              $('button[name="successBtn"]').css('display', 'inline-block');
+          })
+          .fail(function() {
+              $('#alert').css('display', 'inline-block');
+          });
+          
+            // $.post('/_check', function(data, status) {
+            //     if (status == 'success') {
+                    // $('#check-content').html(data);
+                    // $('button[name="checkMeBtn"]').css('display', 'none');
+                    // $('button[name="successBtn"]').css('display', 'inline-block');
+            //     } else {
+            //         $('#check-content').html('<p>Something goes wrong!</p>');
+            //         $('#alert').css('display', 'inline-block');
+            //     }
+            // });
         }
     </script>
 
