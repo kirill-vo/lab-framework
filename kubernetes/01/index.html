@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2/webcomponents-loader.min.js"></script>
     <script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@1/src/zero-md.min.js"></script>
+    <script type="text/javascript" src="//code.jquery.com/jquery-latest.min.js"></script>
 
      <style>
       #mark {
@@ -39,23 +40,60 @@
     <link rel="stylesheet" href="https://bootswatch.com/4/minty/bootstrap.css">
     <link rel="stylesheet" href="https://bootswatch.com/4/minty/_variables.scss">
 
+    <script type="text/javascript">
+      function checkMeBtnClick() {
+            console.log('Button is clicked!');
+            $.post('/_check', function(data, status) {
+                console.log('Status is ' + status);
+                console.log(data);
+                if (status == 'success') {
+                    $('#check-content').html(data);
+                    $('button[name="checkMeBtn"]').css('display', 'none');
+                    $('button[name="successBtn"]').css('display', 'inline-block');
+                } else {
+                    $('#check-content').html('<p>Something goes wrong!</p>');
+                    $('#alert').css('display', 'inline-block');
+                }
+            });
+        }
+    </script>
+
   </head>
   <body>
-    <zero-md id="mark" src="/_data"></zero-md>
+    <div id='check-content' style='display: none;'></div>
+    <zero-md id="mark" src="/_data"></zero-md><br><br>
 
-    <br><br>
-    <!-- <form action="/" method="post">
-      
-    </form> -->
+    <div style='display: none;' id='alert' class="alert alert-dismissible alert-danger">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <strong>Oh snap!</strong> <a href="#" class="alert-link">Change a few things up</a> and try submitting again.
+    </div>
 
     <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-      <div class="btn-group mr-2" role="group" aria-label="First group">
+      <div class="btn-group mr-1" role="group" aria-label="First group">
         <button class="btn btn-primary" style="text-align: center;" onclick="window.location.href = '/_back';"> <<- Back </button>
       </div>
+
       <div class="btn-group mr-2" role="group" aria-label="Second group">
+        <button name='checkMeBtn' class="btn btn-outline-success" onclick="checkMeBtnClick();"> Check this lab </button>
+      </div>
+
+      <div class="btn-group mr-3" role="group" aria-label="Third group">
+        <button name='successBtn' class="btn btn btn-success disabled" style='display: none;'> Success!!!, Please move on &#x2192 </button>
+      </div>
+      
+      <div class="btn-group mr-4" role="group" aria-label="Fourth group">
         <button class="btn btn-primary" style="text-align: center;" onclick="window.location.href = '/_next';"> Next ->> </button>
       </div>
     </div>
+
+
+    <!-- <br>
+    <div>
+        <button name='checkMeBtn' onclick="checkMeBtnClick();">Check me</button>
+        <button name='nextBtn' style='display: none;' onclick="window.location.href = 'next.html'">Next</button>
+    </div> -->
+    <!-- <div id='check-content' /> -->
+
     <!-- <form action="/_back" method="post">
       <button type="submit" class="btn btn-primary" style="text-align: center;"> << BACK </button>
     </form>
