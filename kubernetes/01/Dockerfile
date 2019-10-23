@@ -16,4 +16,7 @@ COPY --from=build /go/src/webserver/main.html ./
 
 COPY webserver/web.service /etc/systemd/system/
 RUN systemctl enable web
+
+ENV KUBECONFIG /root/.kube/config
+
 EXPOSE 8081

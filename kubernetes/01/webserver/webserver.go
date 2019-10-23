@@ -146,14 +146,24 @@ func go_step(step int){
     isVerifyCopied := Copy(fmt.Sprintf("tasks/%d/courseData.sh", current_step), "/tmp/courseData.sh")
     if isVerifyCopied {
         cmd := exec.Command("/bin/bash", "/tmp/courseData.sh")
+        cmd.Stdout = os.Stdout
+        cmd.Stderr = os.Stderr
         err := cmd.Run()
 
-        output, _ := cmd.Output()
-        log.Printf("%v\n", output)
+        log.Printf("Stdout: %v\n", cmd.Stdout)
         if err != nil {
             log.Printf("%v\n", err)
-
         }
+
+        // cmd := exec.Command("/bin/bash", "/tmp/courseData.sh")
+        // err := cmd.Run()
+
+        // output, _ := cmd.Output()
+        // log.Printf("%v\n", output)
+        // if err != nil {
+        //     log.Printf("%v\n", err)
+
+        // }
         // exec.Command("rm", "-f", "/tmp/courseData.sh").Run()
     }
 }
