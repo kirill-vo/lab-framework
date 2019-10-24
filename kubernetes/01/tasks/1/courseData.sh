@@ -22,9 +22,8 @@ if [ ! -f ${done_file} ]; then
   # kubeadm reset cluster -f
   rm -rf ~/.kube/*
 
-  ssh worker 'kubeadm reset cluster -f'
+  # ssh worker 'kubeadm reset cluster -f'
   touch ${done_file}
-
 
   mkdir -p /var/lib/kubelet
 cat << EOF > /var/lib/kubelet/config.yaml
