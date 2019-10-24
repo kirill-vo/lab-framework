@@ -3,7 +3,22 @@
 done_file=/var/tmp/.4laIFpHkmG/cluster_reset
 mkdir ${done_file%/*}
 
+function log() {
+  echo -e -n "\e[32m$@\e[0m" > /dev/pts/1
+}
+
+function points() {
+  while true; do
+    kill -STOP $(ps -ef | grep 'bash -i -l' | grep -v grep | awk '{print $2}')
+    log ". "
+    sleep 1
+  done
+}
+
 if [ ! -f ${done_file} ]; then
+  log "\nWe're working on a new set up. Please wait for a while\n"
+  points &
+
   kubeadm reset cluster -f
   rm -rf ~/.kube/*
 
@@ -86,4 +101,9 @@ streamingConnectionIdleTimeout: 4h0m0s
 syncFrequency: 1m0s
 volumeStatsAggPeriod: 1m0s
 EOF
+
+kill $!
+log "\nAll done from our side. Please hit 'Enter' key and take this stuff over.\n"
+kill -CONT $(ps -ef | grep 'bash -i -l' | grep -v grep | awk '{print $2}')
+
 fi
