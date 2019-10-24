@@ -7,6 +7,7 @@ Initialize Master node with `kubeadm`
 - token life duration: `20m`
 
 ## Tips:
+- To initialize cluster control plane, please run following command `kubeadm init`. Please look for required options
 - You can destroy cluster configuration with `kubeadm reset cluster`
 
 ## Documentation:

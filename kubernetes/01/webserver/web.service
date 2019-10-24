@@ -2,7 +2,9 @@
 Description=
 
 [Service]
-PassEnvironment=STUDENT LAB TRAINING ANALYTICS KUBECONFIG
+Environment=DEV=1
+Environment=HOME=/root
+PassEnvironment=STUDENT LAB TRAINING ANALYTICS KUBECONFIG 
 ExecStart=/var/_data/web
 WorkingDirectory=/var/_data
 KillMode=process

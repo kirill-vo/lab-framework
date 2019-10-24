@@ -51,17 +51,6 @@
           .fail(function() {
               $('#alert').css('display', 'inline-block');
           });
-          
-            // $.post('/_check', function(data, status) {
-            //     if (status == 'success') {
-                    // $('#check-content').html(data);
-                    // $('button[name="checkMeBtn"]').css('display', 'none');
-                    // $('button[name="successBtn"]').css('display', 'inline-block');
-            //     } else {
-            //         $('#check-content').html('<p>Something goes wrong!</p>');
-            //         $('#alert').css('display', 'inline-block');
-            //     }
-            // });
         }
     </script>
 
@@ -76,40 +65,14 @@
     </div>
 
     <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-      <div class="btn-group mr-1" role="group" aria-label="First group">
-        <button class="btn btn-primary" style="text-align: center;" onclick="window.location.href = '/_back';"> <<- Back </button>
-      </div>
-
       <div class="btn-group mr-2" role="group" aria-label="Second group">
-        <button name='checkMeBtn' class="btn btn-outline-success" onclick="checkMeBtnClick();"> Check this lab </button>
+        <button name='checkMeBtn'  onclick="checkMeBtnClick();"> Check this lab </button>
       </div>
 
       <div class="btn-group mr-3" role="group" aria-label="Third group">
-        <button name='successBtn' class="btn btn btn-success disabled" style='display: none;'> Success!!!, Please move on &#x2192 </button>
-      </div>
-      
-      <div class="btn-group mr-4" role="group" aria-label="Fourth group">
-        <button class="btn btn-primary" style="text-align: center;" onclick="window.location.href = '/_next';"> Next ->> </button>
+        <button name='successBtn' style='display: none;' onclick="window.location.href = '/_next';"> Success!!!, Please move on </button>
       </div>
     </div>
-
-
-    <!-- <br>
-    <div>
-        <button name='checkMeBtn' onclick="checkMeBtnClick();">Check me</button>
-        <button name='nextBtn' style='display: none;' onclick="window.location.href = 'next.html'">Next</button>
-    </div> -->
-    <!-- <div id='check-content' /> -->
-
-    <!-- <form action="/_back" method="post">
-      <button type="submit" class="btn btn-primary" style="text-align: center;"> << BACK </button>
-    </form>
-    
-    <form action="/_next" method="post">
-      <button type="submit" class="btn btn-primary" style="text-align: center;"> NEXT >> </button>
-    </form>
- -->
-
     
   </body>
 </html>

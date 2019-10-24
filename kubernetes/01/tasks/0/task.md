@@ -1,4 +1,4 @@
-# In this section you will do following:
+# In this section you will practice following:
 
 - Initialize Kubernetes Control Plain
 - Configure kubectl utility

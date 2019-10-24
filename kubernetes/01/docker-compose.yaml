@@ -12,6 +12,8 @@ services:
     - /lib/modules:/lib/modules:ro
     - /sys/fs/cgroup:/sys/fs/cgroup
     - /var/lib/containerd
+    - ./tasks:/var/_data/tasks
+    - ./main.html:/var/_data/main.html
     tmpfs:
     - /run
     - /tmp
@@ -21,8 +23,9 @@ services:
     - 80:80
     - 443:443
     - 8443:6443
+    env_file:
+      - ~/.student
     environment:
-      STUDENT: Aliaksandr Dalimayeu
       TRAINING: kubernetes
       LAB: basics
       ANALYTICS: ecsc00a05b03.epam.com

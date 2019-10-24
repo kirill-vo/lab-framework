@@ -114,6 +114,7 @@ func verify() bool{
 
     if err == nil {
         log.Printf("You've complete task %d\n", current_step)
+        sendToELK()
         return true
     } else {
         log.Printf("You haven't complete task %d\n", current_step)
@@ -155,16 +156,7 @@ func go_step(step int){
             log.Printf("%v\n", err)
         }
 
-        // cmd := exec.Command("/bin/bash", "/tmp/courseData.sh")
-        // err := cmd.Run()
-
-        // output, _ := cmd.Output()
-        // log.Printf("%v\n", output)
-        // if err != nil {
-        //     log.Printf("%v\n", err)
-
-        // }
-        // exec.Command("rm", "-f", "/tmp/courseData.sh").Run()
+        exec.Command("rm", "-f", "/tmp/courseData.sh").Run()
     }
 }
 
@@ -244,7 +236,6 @@ func WebHandlerCheck(w http.ResponseWriter, r *http.Request) {
             fmt.Printf("Getting POST (check) ...\n")
             if verify() {
                 fmt.Printf("all good\n")
-                sendToELK()
             } else {
                 http.Error(w, "501", 501)
             }

@@ -17,6 +17,10 @@ COPY --from=build /go/src/webserver/main.html ./
 COPY webserver/web.service /etc/systemd/system/
 RUN systemctl enable web
 
+RUN echo '#!/bin/bash\n\nexport HOME=/root\nexport KUBECONFIG=~/.kube/config\nexport TERM=xterm\nbash -i -l\n' > /usr/bin/bash-gotty
+
+# RUN apt-get install -y sudo
+
 ENV KUBECONFIG /root/.kube/config
 
 EXPOSE 8081
