@@ -2,6 +2,7 @@ FROM golang as build
 WORKDIR /go/src/webserver
 COPY ./ ./
 
+RUN sed -i "s/###/$(ls -ld tasks/*/ | wc -l)/" webserver/webserver.go
 RUN go get -u github.com/go-bindata/go-bindata/...
 RUN go-bindata ./... 
 RUN ls -l && mv webserver/webserver.go ./ && GOOS=linux GOARCH=386 go build -a ./*.go

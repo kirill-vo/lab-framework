@@ -51,9 +51,10 @@ func Copy(src, dst string) bool {
 }
 
 var current_step int = 0
-var count_steps int = 9
+var count_steps int = ###
 
-func sendToELK() bool {
+func sendToELK() {
+    log.Printf("Sending to ELK======\n")
     log.Printf("env: %s\n", os.Getenv("ANALYTICS"))
     log.Printf("env: %s\n", os.Getenv("TRAINING"))
     log.Printf("env: %s\n", os.Getenv("STUDENT"))
@@ -68,8 +69,6 @@ func sendToELK() bool {
         Status     bool `json:"status"` 
     }
 
-    // .....
-
     body := &Student{
         Student: os.Getenv("STUDENT"), 
         Lab: os.Getenv("LAB"),
@@ -83,20 +82,16 @@ func sendToELK() bool {
     req.Header.Set("Content-Type", "application/json")
 
     client := &http.Client{}
-    res, e := client.Do(req)
-    if e != nil {
-        log.Printf("Failure %v\n", e)
+    if _, e := client.Do(req); e != nil {
+        log.Printf("Failure to ELK: %v\n", e)
+        log.Printf("Error here\n")
+        return
     }
-
-    defer res.Body.Close()
-
-    fmt.Println("response Status:", res.Status)
-    // Print the body to the stdout
-    io.Copy(os.Stdout, res.Body)
-    return true
+    log.Printf("Data has successful sent to ELK.\n")
 }
 
 func verify() bool{
+    log.Printf("Verify=========\n")
     if current_step == 0 || current_step == count_steps - 1 {
         return true
     }
@@ -107,12 +102,11 @@ func verify() bool{
         return true
     }
 
-    cmd := exec.Command("bash", "/tmp/verify.sh")
-    err := cmd.Run()
+    taskErrors := exec.Command("bash", "/tmp/verify.sh").Run()
 
     exec.Command("rm", "-f", "/tmp/verify.sh").Run()
 
-    if err == nil {
+    if taskErrors == nil {
         log.Printf("You've complete task %d\n", current_step)
         sendToELK()
         return true
@@ -138,7 +132,7 @@ func go_step(step int){
         exec.Command("rm", "current.md").Run()
     }
 
-    // tasks/##/index.html (if it doesn't exist - copy default tasks/index.html)
+    // tasks/N/index.html (if it doesn't exist - copy default tasks/index.html)
     isIndexCopied := Copy(fmt.Sprintf("tasks/%d/index.html", current_step), "index.html")
     if !isIndexCopied {
         Copy("tasks/index.html", "index.html")
@@ -149,13 +143,10 @@ func go_step(step int){
         cmd := exec.Command("/bin/bash", "/tmp/courseData.sh")
         cmd.Stdout = os.Stdout
         cmd.Stderr = os.Stderr
-        err := cmd.Run()
-
-        log.Printf("Stdout: %v\n", cmd.Stdout)
-        if err != nil {
+        if err := cmd.Run(); err != nil {
             log.Printf("%v\n", err)
         }
-
+        log.Printf("Stdout: %v\n", cmd.Stdout)
         exec.Command("rm", "-f", "/tmp/courseData.sh").Run()
     }
 }
