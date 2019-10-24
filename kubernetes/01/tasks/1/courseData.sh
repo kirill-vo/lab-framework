@@ -25,6 +25,7 @@ if [ ! -f ${done_file} ]; then
   ssh worker 'kubeadm reset cluster -f'
   touch ${done_file}
 
+sleep 20
 
   mkdir -p /var/lib/kubelet
 cat << EOF > /var/lib/kubelet/config.yaml

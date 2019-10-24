@@ -1,3 +1,3 @@
 #!/bin/bash
 
-/usr/bin/false
+kubectl get nodes worker -o json | jq '.metadata.labels."node-role.kubernetes.io/worker"' | grep '""'
