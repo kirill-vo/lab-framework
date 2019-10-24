@@ -16,10 +16,10 @@ function points() {
 }
 
 if [ ! -f ${done_file} ]; then
-  log "\nWe're working on a new set up. Please wait for a while\n"
-  points &
+  # log "\nWe're working on a new set up. Please wait for a while\n"
+  # points &
 
-  kubeadm reset cluster -f
+  # kubeadm reset cluster -f
   rm -rf ~/.kube/*
 
   ssh worker 'kubeadm reset cluster -f'
@@ -103,7 +103,7 @@ volumeStatsAggPeriod: 1m0s
 EOF
 
 kill $!
-log "\nAll done from our side. Please hit 'Enter' key and take this stuff over.\n"
+# log "\nAll done from our side. Please hit 'Enter' key and take this stuff over.\n"
 kill -CONT $(ps -ef | grep 'bash -i -l' | grep -v grep | awk '{print $2}')
 
 fi

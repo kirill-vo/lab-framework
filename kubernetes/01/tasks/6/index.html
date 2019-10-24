@@ -7,6 +7,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2/webcomponents-loader.min.js"></script>
     <script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@1/src/zero-md.min.js"></script>
     <script type="text/javascript" src="//code.jquery.com/jquery-latest.min.js"></script>
+    <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
      <style>
       #mark {
@@ -49,8 +51,17 @@
               $('button[name="successBtn"]').css('display', 'inline-block');
           })
           .fail(function() {
-              $('#alert').css('display', 'inline-block');
+              $('#alert').css('display', 'block');
           });
+        }
+
+      function hideAlert() {
+            $('#alert').css('display', 'none');
+        }
+
+      function nextBtnClick() {
+            $('button[name="nextBtn"]').addClass('disabled');
+            window.location.href = '_next';
         }
     </script>
 
@@ -59,13 +70,13 @@
     <div id='check-content' style='display: none;'></div>
     <zero-md id="mark" src="/_data"></zero-md><br><br>
 
-    <div style='display: none;' id='alert' class="alert alert-dismissible alert-danger">
+    <div  id='alert' style='display: none;' class="alert alert-dismissible alert-danger">
       <button type="button" class="close" data-dismiss="alert">&times;</button>
       <strong>Oh snap!</strong> <a href="#" class="alert-link">Change a few things up</a> and try submitting again.
     </div><br>
 
         <button name='checkMeBtn'  onclick="checkMeBtnClick();"> Check this lab </button>
-        <button name='successBtn' style='display: none;' onclick="window.location.href = '/_next';"> Success!!!, Please move on </button>
+        <button name='successBtn' style='display: none;' onclick="nextBtnClick();"> Success!!!, Please move on </button>
     
   </body>
 </html>

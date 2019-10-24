@@ -5,7 +5,7 @@ services:
     # image: sbeliakou/kind:master-1.16.2
     build:
       context: ./
-      dockerfile: Dockerfile
+      dockerfile: master.Dockerfile
     container_name: master
     hostname: master
     volumes:
@@ -43,7 +43,10 @@ services:
         ipv4_address: 172.31.0.2
 
   worker:
-    image: sbeliakou/kind:node-1.16.2
+    # image: sbeliakou/kind:node-1.16.2
+    build:
+      context: ./
+      dockerfile: worker.Dockerfile
     hostname: worker
     volumes:
       - /lib/modules:/lib/modules:ro

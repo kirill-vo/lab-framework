@@ -56,6 +56,10 @@
                 }
             });
         }
+      function nextBtnClick() {
+            $('button[name="nextBtn"]').addClass('disabled');
+            window.location.href = '_next';
+        }
     </script>
 
   </head>
@@ -63,6 +67,6 @@
     <div id='check-content' style='display: none;'></div>
     <zero-md id="mark" src="/_data"></zero-md><br><br>
 
-    <button style="text-align: center;" onclick="window.location.href = '/_next';"> Next ->> </button>
+    <button name='nextBtn' style="text-align: center;" onclick="nextBtnClick();"> Next ->> </button>
   </body>
 </html>
