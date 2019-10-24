@@ -1,12 +1,12 @@
 # Task 5
 
-Label *node01* as `worker`
+Label *worker* node as `worker`
 
 ```
 kubectl get nodes
 NAME     STATUS   ROLES    AGE     VERSION
 master   Ready    master   3m43s   v1.14.0
-node01   Ready    worker   46s     v1.14.0
+worker   Ready    worker   46s     v1.14.0
 ```
 
 

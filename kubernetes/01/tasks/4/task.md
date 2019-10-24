@@ -1,12 +1,13 @@
 # Task 4
 
-Join `node01` to the cluster 
+Join `worker` to the cluster 
 
 ## Tips:
 - Remember token is *abcdef.0123456789abcdef*?
 - Default API Port on master is *6443*
-- Use `ssh node01` to connect to `node01` host
-- Wait till node01 turns to `Ready` state
+- Use `ssh worker` to connect to `worker` host
+- Use also `--discovery-token-unsafe-skip-ca-verification` and  `--ignore-preflight-errors=all` options
+- Wait till *worker* turns to `Ready` state
 
 ## Documentation:
 - https://www.weave.works/blog/weave-net-kubernetes-integration/
