@@ -1,4 +1,5 @@
 #!/bin/bash
 
-[ `kubectl get pods -n kube-system $(kubectl get pods -n kube-system | grep metrics | awk '{print $1}') -o jsonpath='{.status.phase}'` == "Running" ] &&
-echo done
+kubectl get deployment -n kube-system metrics-server -o jsonpath='{.status.conditions[?(@.type=="Progressing")].status}' | grep True &&
+kubectl top pods &&
+kubectl top nodes

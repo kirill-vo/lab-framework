@@ -1,6 +1,9 @@
 # Task 7
 
-Deploy Metrics Server from [here](https://raw.githubusercontent.com/kubernetes/kops/master/addons/metrics-server/v1.8.x.yaml)
+Deploy Metrics Server
+
+## Requirements:
+- Metrics Server Manifest is located here: `/opt/metrics-server.yaml`
 
 ## Check that:
 - Metrics Server is deployed successfully and is `Running`

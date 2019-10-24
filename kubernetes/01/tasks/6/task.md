@@ -7,7 +7,7 @@ Deploy Dashboard Manifest from [here](https://raw.githubusercontent.com/kubernet
 ```
 kubectl create serviceaccount admin-user -n kube-system
 kubectl create clusterrolebinding admin-user-clusterrolebinding \
-  --serviceaccount=kube-system:admin-user 
+  --serviceaccount=kube-system:admin-user \
   --clusterrole=cluster-admin
 ```
 

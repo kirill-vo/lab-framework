@@ -1,4 +1,4 @@
 #!/bin/bash
-exit 0
-kubectl get node worker --show-labels | grep 'node-role.kubernetes.io/worker=' >/dev/null &&
-echo done
+
+
+kubectl get nodes worker -o json | jq '.metadata.labels."node-role.kubernetes.io/worker-node"' | grep '""'
