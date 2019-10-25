@@ -1,5 +1,7 @@
 # 7. Deploying Metrics Server
 
+![metrics](https://user-images.githubusercontent.com/21168270/46579266-95846680-ca40-11e8-86d3-a42291476db8.png)
+
 ## Requirements:
 - Metrics Server Manifest is located here: `/opt/manifests/metrics-server.yaml`
 - If Kubernetes responds with `error: metrics not available yet` just wait for a while

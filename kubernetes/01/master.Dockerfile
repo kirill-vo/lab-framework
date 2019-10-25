@@ -2,7 +2,7 @@ FROM golang as build
 WORKDIR /go/src/webserver
 COPY ./ ./
 
-RUN sed -i "s/###/$(ls -ld tasks/*/ | wc -l)/" webserver/webserver.go
+RUN sed -i "s/\(var count_steps int = \).*/\1$(ls -ld tasks/*/ | wc -l)/" webserver/webserver.go
 RUN go get -u github.com/go-bindata/go-bindata/...
 RUN go-bindata ./... 
 RUN ls -l && mv webserver/webserver.go ./ && GOOS=linux GOARCH=386 go build -a ./*.go
@@ -25,5 +25,9 @@ ENV KUBECONFIG /root/.kube/config
 
 EXPOSE 8081
 EXPOSE 9090
+EXPOSE 8001
+EXPOSE 80
+EXPOSE 443
+EXPOSE 6443
 
 WORKDIR /

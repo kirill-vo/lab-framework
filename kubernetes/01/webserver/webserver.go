@@ -51,7 +51,7 @@ func Copy(src, dst string) bool {
 }
 
 var current_step int = 0
-var count_steps int = ###
+var count_steps int = 10
 
 func sendToELK() {
     log.Printf("Sending to ELK======\n")

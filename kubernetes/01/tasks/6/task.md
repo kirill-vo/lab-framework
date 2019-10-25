@@ -3,9 +3,11 @@
 ![dashboard](https://github.com/kubernetes/dashboard/raw/master/docs/images/dashboard-ui.png)
 
 ## Requirements:
-- Please use following manifest: [dashboard.yaml](https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml)
+- Please use following manifest: [kubernetes-dashboard.yaml on github](https://github.com/kubernetes/dashboard/blob/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml)
 
-## Create Admin User
+## Guide:
+
+### Create Admin User
 
 ```
 kubectl create serviceaccount admin-user -n kube-system
@@ -14,14 +16,14 @@ kubectl create clusterrolebinding admin-user-clusterrolebinding \
   --clusterrole=cluster-admin
 ```
 
-## Get Admin Secret
+### Get Admin Secret
 
 ```
 SECRET_NAME="$(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}')"
 kubectl get secret -n kube-system ${SECRET_NAME} -o jsonpath='{.data.token}' | base64 -d
 ```
 
-## Proxy Dashboard
+### Proxy Dashboard
 
 Expose Dashord from inside cluster with `kubectl proxy` command:
 
@@ -29,10 +31,10 @@ Expose Dashord from inside cluster with `kubectl proxy` command:
 kubectl proxy --address='0.0.0.0' --accept-hosts='^*$'
 ```
 
-## Explore Kubernetes Cluster on "Dashboard" Tab
+### Explore Kubernetes Cluster on "Dashboard" Tab
 
 Please use token authentication from previous step
 
-## Documentation:
+### Documentation:
 - https://github.com/kubernetes/dashboard
 - https://github.com/kubernetes/dashboard/wiki/Creating-sample-user
