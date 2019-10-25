@@ -12,5 +12,5 @@
 - Command `kubectl top pods --all-namespaces` shows performance statistics by pods
 
 ## Documentation:
-- https://kubernetes.io/docs/tasks/debug-application-cluster/resource-usage-monitoring/
-- https://github.com/kubernetes-incubator/metrics-server
+- [resource-usage-monitoring](https://kubernetes.io/docs/tasks/debug-application-cluster/resource-usage-monitoring/)
+- [metrics-server](https://github.com/kubernetes-incubator/metrics-server)
