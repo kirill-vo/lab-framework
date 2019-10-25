@@ -4,7 +4,7 @@ Deploy POD Network Driver
 
 
 ## Requirements:
-- Pod Network Manifest File is located here: `/opt/pod-network.yaml`
+- Pod Network Manifest File is located here: `/opt/manifests/pod-network.yaml`
 
 
 ## Verification:

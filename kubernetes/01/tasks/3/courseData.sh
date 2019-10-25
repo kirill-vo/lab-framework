@@ -44,3 +44,6 @@ kubectl patch deployments.apps -n kube-system coredns -p '{
 }'
 
 kubectl rollout restart deployment -n kube-system coredns
+
+mkdir -p /opt/manifests/
+cat /kind/manifests/default-cni.yaml | sed 's/.. .PodSubnet ../10.244.0.0\/16/' > /opt/manifests/pod-network.yaml

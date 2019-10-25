@@ -3,7 +3,7 @@
 Deploy Metrics Server
 
 ## Requirements:
-- Metrics Server Manifest is located here: `/opt/metrics-server.yaml`
+- Metrics Server Manifest is located here: `/opt/manifests/metrics-server.yaml`
 - If Kubernetes responds with `error: metrics not available yet` just wait for a while
 
 ## Check that:
