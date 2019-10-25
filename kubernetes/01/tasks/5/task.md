@@ -1,12 +1,13 @@
-# Task 5
+# 5. Labeling Resources
 
-Label *worker* node as `worker-node`
+## Requirements:
+- Label *worker* node as `worker-node`
 
 ```
 kubectl get nodes
 NAME     STATUS   ROLES         AGE     VERSION
-master   Ready    master        3m43s   v1.14.0
-worker   Ready    worker-node   46s     v1.14.0
+master   Ready    master        3m43s   v1.15.3
+worker   Ready    worker-node   46s     v1.15.3
 ```
 
 ## Tips:

@@ -1,6 +1,4 @@
-# Task 7
-
-Deploy Metrics Server
+# 7. Deploying Metrics Server
 
 ## Requirements:
 - Metrics Server Manifest is located here: `/opt/manifests/metrics-server.yaml`

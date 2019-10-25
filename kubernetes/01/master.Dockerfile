@@ -9,7 +9,7 @@ RUN ls -l && mv webserver/webserver.go ./ && GOOS=linux GOARCH=386 go build -a .
 RUN mv bindata web
 
 
-FROM sbeliakou/kind:master-1.16.2
+FROM sbeliakou/kind:master-1.15.3
 WORKDIR /var/_data/
 
 RUN kubeadm reset cluster -f && rm -rf ~/.kube/*

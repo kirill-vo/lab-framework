@@ -1,14 +1,10 @@
-# Task 1
-
+# 1. Kubernetes Control Plane
 
 ## Cluster Infrastructure
 
 ![cluster](https://mapr.com/blog/kubernetes-kafka-event-sourcing-architecture-patterns-and-use-case-examples/assets/clusters.png)
 
-
-Initialize Master node with `kubeadm`
-
-## Parameters:
+## Requirements:
 - token: `abcdef.0123456789abcdef`
 - token life duration: `20m`
 - Pod Network CIDR: `10.244.0.0/16`

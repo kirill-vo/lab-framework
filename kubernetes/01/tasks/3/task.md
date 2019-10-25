@@ -1,6 +1,6 @@
-# Task 3
+# 3. Deploying POD Network Driver
 
-Deploy POD Network Driver
+![network](https://assets.digitalocean.com/articles/k8s-networking/double-service.png)
 
 
 ## Requirements:
@@ -14,7 +14,7 @@ kindnet-2rs42    1/1     Running   0          3m18s
 
 kubectl get nodes
 NAME     STATUS   ROLES    AGE     VERSION
-master   Ready    master   7m35s   v1.16.2
+master   Ready    master   7m35s   v1.15.3
 ```
 
 ## Tips:

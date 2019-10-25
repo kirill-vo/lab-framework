@@ -1,6 +1,6 @@
-# Task 4
+# 4. Joining `worker` to the cluster 
 
-Join `worker` to the cluster 
+![worker](https://miro.medium.com/max/926/1*JZ8cm65P2_iLOIo051aWtQ.png)
 
 ## Tips:
 - Remember token is *abcdef.0123456789abcdef*?

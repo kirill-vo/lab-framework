@@ -1,6 +1,9 @@
-# Task 6
+# 6. Kubernetes Dashboard
 
-Deploy Dashboard Manifest from [here](https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml)
+![dashboard](https://github.com/kubernetes/dashboard/raw/master/docs/images/dashboard-ui.png)
+
+## Requirements:
+- Please use following manifest: [dashboard.yaml](https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml)
 
 ## Create Admin User
 
