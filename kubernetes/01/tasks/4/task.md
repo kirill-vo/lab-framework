@@ -1,21 +1,17 @@
-# 4. Deploying POD Network Driver
+# 4. Configuring `kubectl` bash Completion
 
-![network](https://assets.digitalocean.com/articles/k8s-networking/double-service.png)
-
-
-## Requirements:
-- Pod Network Manifest File is located here: `/opt/manifests/pod-network.yaml`
-
+Configure `kubectl` bash completion for user `user01` permanently
 
 ## Verification:
 ```
-kubectl get pods -n kube-system | grep kindnet
-kindnet-2rs42    1/1     Running   0          3m18s
-
-kubectl get nodes
-NAME     STATUS   ROLES    AGE     VERSION
-master   Ready    master   7m35s   v1.15.3
+user01@master:/# kubectl <tab><tab>
+annotate       autoscale      cordon         drain          kustomize      port-forward   set            
+api-resources  certificate    cp             edit           label          proxy          taint          
+api-versions   cluster-info   create         exec           logs           replace        top            
+apply          completion     delete         explain        options        rollout        uncordon       
+attach         config         describe       expose         patch          run            version        
+auth           convert        diff           get            plugin         scale          wait  
 ```
 
-## Tips:
-- Check that CNI pods are running
+## Documentation:
+- https://kubernetes.io/docs/reference/kubectl/cheatsheet/#kubectl-autocomplete

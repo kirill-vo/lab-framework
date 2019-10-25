@@ -1,4 +1,3 @@
 #!/bin/bash
 
-
-kubectl get nodes worker -o json | jq '.metadata.labels."node-role.kubernetes.io/worker-node"' | grep '""'
+kubectl get nodes worker -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}' | grep True

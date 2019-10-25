@@ -1,16 +1,40 @@
-# 8. Deploying Metrics Server
+# 8. Kubernetes Dashboard
 
-![metrics](https://user-images.githubusercontent.com/21168270/46579266-95846680-ca40-11e8-86d3-a42291476db8.png)
+![dashboard](https://github.com/kubernetes/dashboard/raw/master/docs/images/dashboard-ui.png)
 
 ## Requirements:
-- Metrics Server Manifest is located here: `/opt/manifests/metrics-server.yaml`
-- If Kubernetes responds with `error: metrics not available yet` just wait for a while
+- Please use following manifest: [kubernetes-dashboard.yaml on github](https://github.com/kubernetes/dashboard/blob/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml)
 
-## Check that:
-- Metrics Server is deployed successfully and is `Running`
-- Command `kubectl top nodes` shows performance statistics by nodes
-- Command `kubectl top pods --all-namespaces` shows performance statistics by pods
+## Guide:
 
-## Documentation:
-- https://kubernetes.io/docs/tasks/debug-application-cluster/resource-usage-monitoring/
-- https://github.com/kubernetes-incubator/metrics-server
+### Create Admin User
+
+```
+kubectl create serviceaccount admin-user -n kube-system
+kubectl create clusterrolebinding admin-user-clusterrolebinding \
+  --serviceaccount=kube-system:admin-user \
+  --clusterrole=cluster-admin
+```
+
+### Get Admin Secret
+
+```
+SECRET_NAME="$(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}')"
+kubectl get secret -n kube-system ${SECRET_NAME} -o jsonpath='{.data.token}' | base64 -d
+```
+
+### Proxy Dashboard
+
+Expose Dashord from inside cluster with `kubectl proxy` command:
+
+```
+kubectl proxy --address='0.0.0.0' --accept-hosts='^*$'
+```
+
+### Explore Kubernetes Cluster on "Dashboard" Tab
+
+Please use token authentication from previous step
+
+### Documentation:
+- https://github.com/kubernetes/dashboard
+- https://github.com/kubernetes/dashboard/wiki/Creating-sample-user

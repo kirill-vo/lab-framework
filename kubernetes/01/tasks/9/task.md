@@ -1,20 +1,16 @@
-# 9. Deploying Ingress-Controller
+# 9. Deploying Metrics Server
 
-![ingress](https://miro.medium.com/max/3970/1*KIVa4hUVZxg-8Ncabo8pdg.png)
+![metrics](https://user-images.githubusercontent.com/21168270/46579266-95846680-ca40-11e8-86d3-a42291476db8.png)
 
+## Requirements:
+- Metrics Server Manifest is located here: `/opt/manifests/metrics-server.yaml`
+- If Kubernetes responds with `error: metrics not available yet` just wait for a while
 
-## Requirements :
-- [Ingress-controller manifest](https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/mandatory.yaml)
-- Ingress-controller Service Manifest: `/opt/manifests/ingress-svc.yaml`
-
-
-## Verification:  
-- Make sure **nginx-ingress-controller-...** Pod is running in **ingress-nginx** namespace. Also you should see **ingress-nginx** service in **ingress-nginx** namespace.  
-- Explore `localhost` page in your browser. You should see nginx ingress controller default page (*etc. openresty*). 
-- Explore `localhost/green` page in your browser. You should see green color page.  
-  
+## Check that:
+- Metrics Server is deployed successfully and is `Running`
+- Command `kubectl top nodes` shows performance statistics by nodes
+- Command `kubectl top pods --all-namespaces` shows performance statistics by pods
 
 ## Documentation:
-- https://kubernetes.io/docs/concepts/services-networking/ingress/
-- https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/
-- https://kubernetes.github.io/ingress-nginx/
+- https://kubernetes.io/docs/tasks/debug-application-cluster/resource-usage-monitoring/
+- https://github.com/kubernetes-incubator/metrics-server
