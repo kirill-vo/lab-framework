@@ -1,4 +1,4 @@
-# 5. Labeling Resources
+# 6. Labeling Resources
 
 ## Requirements:
 - Label *worker* node as `worker-node`

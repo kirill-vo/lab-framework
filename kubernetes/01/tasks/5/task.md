@@ -1,4 +1,4 @@
-# 4. Joining `worker` Node to the cluster 
+# 5. Joining `worker` Node to the cluster 
 
 ![worker](https://miro.medium.com/max/926/1*JZ8cm65P2_iLOIo051aWtQ.png)
 

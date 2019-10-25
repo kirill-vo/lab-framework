@@ -1,4 +1,4 @@
-# 6. Kubernetes Dashboard
+# 7. Kubernetes Dashboard
 
 ![dashboard](https://github.com/kubernetes/dashboard/raw/master/docs/images/dashboard-ui.png)
 

@@ -1,4 +1,4 @@
-# 8. Deploying Ingress-Controller
+# 9. Deploying Ingress-Controller
 
 ![ingress](https://miro.medium.com/max/3970/1*KIVa4hUVZxg-8Ncabo8pdg.png)
 

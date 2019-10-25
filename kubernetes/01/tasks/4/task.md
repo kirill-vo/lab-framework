@@ -1,4 +1,4 @@
-# 3. Deploying POD Network Driver
+# 4. Deploying POD Network Driver
 
 ![network](https://assets.digitalocean.com/articles/k8s-networking/double-service.png)
 
