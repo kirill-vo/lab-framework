@@ -51,12 +51,12 @@
               $('button[name="nextBtn"]').css('display', 'inline-block');
           })
           .fail(function() {
-              $('#alert').css('display', 'inline-block');
+              $('#alert').css('display', 'block');
           });
         }
 
         function hideAlert() {
-            $('#alert').css('display', 'block');
+            $('#alert').css('display', 'none');
         }
 
         function nextBtnClick() {
@@ -71,7 +71,7 @@
     <zero-md id="mark" src="/_data"></zero-md><br><br>
 
     <div  id='alert' style='display: none;' class="alert alert-dismissible alert-danger">
-      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <button type="button" class="close" onclick="hideAlert();">&times;</button>
       <strong>Oh snap!</strong> <a href="#" class="alert-link">Change a few things up</a> and try submitting again.
     </div><br>
 
