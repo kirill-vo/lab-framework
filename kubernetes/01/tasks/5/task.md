@@ -1,20 +1,14 @@
-# 5. Labeling Resources
+# 4. Joining `worker` Node to the cluster 
 
-## Requirements:
-- Label *worker* node as `worker-node`
-
-```
-kubectl get nodes
-NAME     STATUS   ROLES         AGE     VERSION
-master   Ready    master        3m43s   v1.15.3
-worker   Ready    worker-node   46s     v1.15.3
-```
+![worker](https://miro.medium.com/max/926/1*JZ8cm65P2_iLOIo051aWtQ.png)
 
 ## Tips:
-- You should just label necessary node as `node-role.kubernetes.io/<< node role >>`
-- Use commande like `kubectl label node <nodename> <labelname>=<labelvalue>`
-- If you need to label resource with empty label just ommit `<labelvalue>`
+- Remember token is `abcdef.0123456789abcdef`?
+- Default API Port on master is `6443`
+- Use `ssh worker` to connect to `worker` host
+- Use also `--discovery-token-unsafe-skip-ca-verification` and  `--ignore-preflight-errors=all` options
+- Wait till `worker` turns to `Ready` state
 
 ## Documentation:
-- http://kubernetesbyexample.com/labels/
-- https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#updating-labels
+- https://www.weave.works/blog/weave-net-kubernetes-integration/
+- https://www.weave.works/docs/net/latest/kubernetes/kube-addon/

@@ -23,6 +23,8 @@ RUN systemctl enable web
 
 ENV KUBECONFIG /root/.kube/config
 
+RUN apt-get install -y sudo
+
 EXPOSE 8081
 EXPOSE 9090
 EXPOSE 8001

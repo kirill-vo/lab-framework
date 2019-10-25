@@ -1,40 +1,20 @@
-# 6. Kubernetes Dashboard
-
-![dashboard](https://github.com/kubernetes/dashboard/raw/master/docs/images/dashboard-ui.png)
+# 5. Labeling Resources
 
 ## Requirements:
-- Please use following manifest: [kubernetes-dashboard.yaml on github](https://github.com/kubernetes/dashboard/blob/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml)
-
-## Guide:
-
-### Create Admin User
+- Label *worker* node as `worker-node`
 
 ```
-kubectl create serviceaccount admin-user -n kube-system
-kubectl create clusterrolebinding admin-user-clusterrolebinding \
-  --serviceaccount=kube-system:admin-user \
-  --clusterrole=cluster-admin
+kubectl get nodes
+NAME     STATUS   ROLES         AGE     VERSION
+master   Ready    master        3m43s   v1.15.3
+worker   Ready    worker-node   46s     v1.15.3
 ```
 
-### Get Admin Secret
+## Tips:
+- You should just label necessary node as `node-role.kubernetes.io/<< node role >>`
+- Use commande like `kubectl label node <nodename> <labelname>=<labelvalue>`
+- If you need to label resource with empty label just ommit `<labelvalue>`
 
-```
-SECRET_NAME="$(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}')"
-kubectl get secret -n kube-system ${SECRET_NAME} -o jsonpath='{.data.token}' | base64 -d
-```
-
-### Proxy Dashboard
-
-Expose Dashord from inside cluster with `kubectl proxy` command:
-
-```
-kubectl proxy --address='0.0.0.0' --accept-hosts='^*$'
-```
-
-### Explore Kubernetes Cluster on "Dashboard" Tab
-
-Please use token authentication from previous step
-
-### Documentation:
-- https://github.com/kubernetes/dashboard
-- https://github.com/kubernetes/dashboard/wiki/Creating-sample-user
+## Documentation:
+- http://kubernetesbyexample.com/labels/
+- https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#updating-labels

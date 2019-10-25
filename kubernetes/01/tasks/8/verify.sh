@@ -1,4 +1,5 @@
 #!/bin/bash
 
-[[ $(kubectl get deployments -n ingress-nginx nginx-ingress-controller -o jsonpath='{.status.readyReplicas}') == '1' ]] &&
-echo done
+kubectl get deployment -n kube-system metrics-server -o jsonpath='{.status.conditions[?(@.type=="Progressing")].status}' | grep True &&
+kubectl top pods &&
+kubectl top nodes

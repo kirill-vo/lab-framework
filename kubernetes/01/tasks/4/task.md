@@ -1,14 +1,21 @@
-# 4. Joining `worker` Node to the cluster 
+# 3. Deploying POD Network Driver
 
-![worker](https://miro.medium.com/max/926/1*JZ8cm65P2_iLOIo051aWtQ.png)
+![network](https://assets.digitalocean.com/articles/k8s-networking/double-service.png)
+
+
+## Requirements:
+- Pod Network Manifest File is located here: `/opt/manifests/pod-network.yaml`
+
+
+## Verification:
+```
+kubectl get pods -n kube-system | grep kindnet
+kindnet-2rs42    1/1     Running   0          3m18s
+
+kubectl get nodes
+NAME     STATUS   ROLES    AGE     VERSION
+master   Ready    master   7m35s   v1.15.3
+```
 
 ## Tips:
-- Remember token is `abcdef.0123456789abcdef`?
-- Default API Port on master is `6443`
-- Use `ssh worker` to connect to `worker` host
-- Use also `--discovery-token-unsafe-skip-ca-verification` and  `--ignore-preflight-errors=all` options
-- Wait till `worker` turns to `Ready` state
-
-## Documentation:
-- https://www.weave.works/blog/weave-net-kubernetes-integration/
-- https://www.weave.works/docs/net/latest/kubernetes/kube-addon/
+- Check that CNI pods are running

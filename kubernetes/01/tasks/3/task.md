@@ -1,21 +1,11 @@
-# 3. Deploying POD Network Driver
+# 2. Client Access to the Cluster
 
-![network](https://assets.digitalocean.com/articles/k8s-networking/double-service.png)
+We have just created a user `user01`. Please do necessary configuration for this user so that it will be able to manage kubernetes cluster with `kubectl` tool
 
+## Requiremets:
+- user `user01` should be able to use tool kubectl for managing k8s cluster (localhost)
+- Use `sudo` to switch between user accounts
+- User proper ownerships on required configuration file(s)
 
-## Requirements:
-- Pod Network Manifest File is located here: `/opt/manifests/pod-network.yaml`
-
-
-## Verification:
-```
-kubectl get pods -n kube-system | grep kindnet
-kindnet-2rs42    1/1     Running   0          3m18s
-
-kubectl get nodes
-NAME     STATUS   ROLES    AGE     VERSION
-master   Ready    master   7m35s   v1.15.3
-```
-
-## Tips:
-- Check that CNI pods are running
+## Documentation:
+- https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/
